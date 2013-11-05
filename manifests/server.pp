@@ -1,4 +1,4 @@
-class pulp::server($ensure = 'present', $server_conf = '') {
+class pulp::server($ensure = 'present', $conf_template = '') {
 
   if $ensure == 'absent' {
     package { [ 'pulp-server',
@@ -27,10 +27,10 @@ class pulp::server($ensure = 'present', $server_conf = '') {
       ensure => 'present'
     }
 
-    if $server_conf == '' {
-      $config = template('pulp/server.conf.erb')
+    if $conf_template == '' {
+      $template = 'pulp/server.conf.erb'
     } else {
-      $config = $server_conf
+      $template = $conf_template
     }
 
     file { '/etc/pulp/server.conf':
@@ -38,7 +38,7 @@ class pulp::server($ensure = 'present', $server_conf = '') {
       group   => 'root',
       ensure  => 'present',
       mode    => 644,
-      content => $config,
+      content => template($template),
       require => Package['pulp-server']
     }
 

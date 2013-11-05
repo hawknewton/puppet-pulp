@@ -21,16 +21,16 @@ describe 'pulp::server' do
     include_context :server_services_running
     include_context :server_setup_db
 
-    context 'server_conf => asdf' do
+    context 'conf_template => test/server.conf.erb' do
       let(:params) do
         { ensure: 'present',
-          server_conf: 'asdf' }
+          conf_template: 'test/server.conf.erb' }
       end
-      include_context :server_conf_content_asdf
+      include_context :server_conf_test_template
     end
 
-    context 'with default content' do
-      include_context :server_conf_default_content
+    context 'with default conf_template' do
+      include_context :server_conf_default_template
     end
   end
 

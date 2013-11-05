@@ -20,15 +20,14 @@ shared_context :server_conf_absent do
   end
 end
 
-shared_context :server_conf_content_asdf do
+shared_context :server_conf_test_template do
   example do
-    should contain_file('/etc/pulp/server.conf').with({
-      content: 'asdf'
-    })
+    should contain_file('/etc/pulp/server.conf')
+      .with_content /^This is a test template/
   end
 end
 
-shared_context :server_conf_default_content do
+shared_context :server_conf_default_template do
   let(:fqdn) { 'fqdn.myhost.com' }
   let(:facts) { { fqdn: fqdn } }
 
