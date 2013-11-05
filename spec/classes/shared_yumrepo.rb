@@ -1,6 +1,4 @@
-require 'spec_helper'
-
-shared_context :pulp_repo_present do
+shared_context :yumrepo_present do
   example do
     should contain_yumrepo('pulp-v2-stable').with({
       baseurl: 'http://repos.fedorapeople.org/repos/pulp/pulp/stable/2/$releasever/$basearch/',
@@ -10,8 +8,8 @@ shared_context :pulp_repo_present do
   end
 end
 
-shared_context :pulp_repo_enabled do
-  include_context :pulp_repo_present
+shared_context :yumrepo_enabled do
+  include_context :yumrepo_present
   example do
     should contain_yumrepo('pulp-v2-stable').with({
       enabled: '1',
@@ -19,6 +17,26 @@ shared_context :pulp_repo_enabled do
   end
 end
 
+
+shared_context :yumrepo_disabled do
+  include_context :yumrepo_present
+  example do
+    should contain_yumrepo('pulp-v2-stable').with({
+      enabled: '0',
+    })
+  end
+end
+
+
+shared_context :yumrepo_absent do
+  example do
+    should contain_yumrepo('pulp-v2-stable').with({
+      enabled: 'absent'
+    })
+  end
+end
+
+=begin
 
 shared_context :pulp_repo_disabled do
   include_context :pulp_repo_present
@@ -38,3 +56,4 @@ shared_context :pulp_repo_absent do
     })
   end
 end
+=end
