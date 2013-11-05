@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'classes/shared_server_packages'
-require 'classes/shared_server_config'
+require 'classes/shared_server_conf'
 require 'classes/shared_server_services'
 require 'classes/shared_server_setup_db'
 
@@ -9,7 +9,7 @@ describe 'pulp::server' do
 
   context 'with default params' do
     include_context :server_packages_present
-    include_context :server_config_present
+    include_context :server_conf_present
     include_context :server_services_running
     include_context :server_setup_db
   end
@@ -17,20 +17,20 @@ describe 'pulp::server' do
   context 'ensure => present' do
     let(:params) { { ensure: 'present' } }
     include_context :server_packages_present
-    include_context :server_config_present
+    include_context :server_conf_present
     include_context :server_services_running
     include_context :server_setup_db
 
-    context 'server_config => asdf' do
+    context 'server_conf => asdf' do
       let(:params) do
         { ensure: 'present',
-          server_config: 'asdf' }
+          server_conf: 'asdf' }
       end
-      include_context :server_config_content_asdf
+      include_context :server_conf_content_asdf
     end
 
     context 'with default content' do
-      include_context :server_config_default_content
+      include_context :server_conf_default_content
     end
   end
 
@@ -39,7 +39,7 @@ describe 'pulp::server' do
     let(:version) { '2.2.0-1.el6' }
 
     include_context :server_packages_pinned
-    include_context :server_config_present
+    include_context :server_conf_present
     include_context :server_services_running
     include_context :server_setup_db
   end
@@ -48,7 +48,7 @@ describe 'pulp::server' do
   context 'ensure => absent' do
     let(:params) { { ensure: 'absent' } }
     include_context :server_packages_absent
-    include_context :server_config_absent
+    include_context :server_conf_absent
     include_context :server_services_stopped
   end
 end

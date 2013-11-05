@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_context :server_config_present do
+shared_context :server_conf_present do
   example do
     should contain_file('/etc/pulp/server.conf').with({
       ensure: 'present',
@@ -12,7 +12,7 @@ shared_context :server_config_present do
   end
 end
 
-shared_context :server_config_absent do
+shared_context :server_conf_absent do
   example do
     should contain_file('/etc/pulp/server.conf').with({
       ensure: 'absent'
@@ -20,7 +20,7 @@ shared_context :server_config_absent do
   end
 end
 
-shared_context :server_config_content_asdf do
+shared_context :server_conf_content_asdf do
   example do
     should contain_file('/etc/pulp/server.conf').with({
       content: 'asdf'
@@ -28,7 +28,7 @@ shared_context :server_config_content_asdf do
   end
 end
 
-shared_context :server_config_default_content do
+shared_context :server_conf_default_content do
   let(:fqdn) { 'fqdn.myhost.com' }
   let(:facts) { { fqdn: fqdn } }
 
