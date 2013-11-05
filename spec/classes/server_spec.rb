@@ -20,6 +20,18 @@ describe 'pulp::server' do
     include_context :server_config_present
     include_context :server_services_running
     include_context :server_setup_db
+
+    context 'server_config => asdf' do
+      let(:params) do
+        { ensure: 'present',
+          server_config: 'asdf' }
+      end
+      include_context :server_config_content_asdf
+    end
+
+    context 'with default content' do
+      include_context :server_config_default_content
+    end
   end
 
   context 'ensure => 2.2.0-1.el6' do

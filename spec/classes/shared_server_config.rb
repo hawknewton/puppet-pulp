@@ -19,3 +19,21 @@ shared_context :server_config_absent do
     })
   end
 end
+
+shared_context :server_config_content_asdf do
+  example do
+    should contain_file('/etc/pulp/server.conf').with({
+      content: 'asdf'
+    })
+  end
+end
+
+shared_context :server_config_default_content do
+  let(:fqdn) { 'fqdn.myhost.com' }
+  let(:facts) { { fqdn: fqdn } }
+
+  example do
+    should contain_file('/etc/pulp/server.conf')
+      .with_content /^url: tcp:\/\/#{fqdn}:5672/
+  end
+end

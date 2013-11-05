@@ -1,4 +1,4 @@
-class pulp::server($ensure = 'present') {
+class pulp::server($ensure = 'present', $server_config = '') {
 
   if $ensure == 'absent' {
     package { [ 'pulp-server',
@@ -27,12 +27,19 @@ class pulp::server($ensure = 'present') {
       ensure => 'present'
     }
 
+    if $server_config == '' {
+      $config = template('pulp/server.conf.erb')
+    } else {
+      $config = $server_config
+    }
+
     file { '/etc/pulp/server.conf':
-      owner  => 'root',
-      group  => 'root',
-      ensure => 'present',
-      mode   => 644,
-      require  => Package['pulp-server']
+      owner   => 'root',
+      group   => 'root',
+      ensure  => 'present',
+      mode    => 644,
+      content => $config,
+      require => Package['pulp-server']
     }
 
     service { [ 'mongod', 'qpidd']:
