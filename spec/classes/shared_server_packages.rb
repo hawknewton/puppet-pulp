@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_context :shared_server_packages_base do
+shared_context :server_packages_base do
   let(:package_params) do
     { ensure: ensure_value,
       notify: 'Exec[setup-pulp-db]',
@@ -14,17 +14,17 @@ shared_context :shared_server_packages_base do
   it { should contain_package('httpd').with(ensure: 'present') }
 end
 
-shared_context :shared_server_packages_present do
+shared_context :server_packages_present do
   let(:ensure_value) { 'present' }
-  include_context :shared_server_packages_base
+  include_context :server_packages_base
 end
 
-shared_context :shared_server_packages_pinned do
+shared_context :server_packages_pinned do
   let(:ensure_value) { version }
-  include_context :shared_server_packages_base
+  include_context :server_packages_base
 end
 
-shared_context :shared_server_packages_absent do
+shared_context :server_packages_absent do
   it { should contain_package('pulp-server').with(ensure: 'absent') }
   it { should contain_package('pulp-puppet-plugins').with(ensure: 'absent') }
   it { should contain_package('pulp-puppet-plugins').with(ensure: 'absent') }

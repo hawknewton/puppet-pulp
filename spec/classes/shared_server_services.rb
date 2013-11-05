@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_context :shared_server_services_running do
+shared_context :server_services_running do
   let(:service_params) do
     { ensure: 'running',
       require: 'File[/etc/pulp/server.conf]' }
@@ -18,7 +18,7 @@ shared_context :shared_server_services_running do
 end
 
 
-shared_context :shared_server_services_stopped do
+shared_context :server_services_stopped do
   it { should contain_service('mongod').with(ensure: 'stopped') }
   it { should contain_service('qpidd').with(ensure: 'stopped') }
 end

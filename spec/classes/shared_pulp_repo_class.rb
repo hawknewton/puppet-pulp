@@ -9,7 +9,6 @@ shared_context :pulp_repo_class_enabled do
   end
 end
 
-
 shared_context :pulp_repo_class_disabled do
   example do
     should contain_class('pulp::repo').with({
@@ -19,7 +18,6 @@ shared_context :pulp_repo_class_disabled do
   end
 end
 
-
 shared_context :pulp_repo_class_absent do
   example do
     should contain_class('pulp::repo').with({
@@ -28,4 +26,3 @@ shared_context :pulp_repo_class_absent do
     })
   end
 end
-

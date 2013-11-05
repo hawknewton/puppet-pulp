@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_context :shared_server_config_present do
+shared_context :server_config_present do
   example do
     should contain_file('/etc/pulp/server.conf').with({
       ensure: 'present',
@@ -12,7 +12,7 @@ shared_context :shared_server_config_present do
   end
 end
 
-shared_context :shared_server_config_absent do
+shared_context :server_config_absent do
   example do
     should contain_file('/etc/pulp/server.conf').with({
       ensure: 'absent'
