@@ -12,6 +12,7 @@ describe 'pulp::server' do
     include_context :server_conf_present
     include_context :server_services_running
     include_context :server_setup_db
+    include_context :server_conf_default_template
   end
 
   context 'ensure => present' do

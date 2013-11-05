@@ -25,3 +25,40 @@ RSpec.configure do |c|
     puppet_apply 'include epel'
   end
 end
+
+class PuppetManifest
+  def initialize(code)
+    @code = code
+  end
+
+  def exit_code
+    run.exit_code
+  end
+
+  def stderr
+    run.stderr
+  end
+
+  def refresh
+    run.refresh
+  end
+
+  def run
+    @run = puppet_apply @code if @run.nil?
+    @run
+  end
+
+  def idempotent?
+    run
+    puppet_apply(@code).exit_code == 0
+  end
+
+  def to_s
+    "\"#{@code}\""
+  end
+end
+
+def puppet_manifest(code)
+  PuppetManifest.new code
+end
+
