@@ -20,7 +20,10 @@ describe 'pulp class:' do
     end
   end
 
-  pp = %q{
+  conf = File.read File.join fixture_path, 'server.conf'
+  conf = conf.gsub '"', '\\"'
+
+  pp = %Q{
 class { 'pulp::server': }
 class { 'pulp': }
 }

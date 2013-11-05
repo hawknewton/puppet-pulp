@@ -3,5 +3,5 @@ default_set: 'centos-64-x64'
 sets:
   'centos-64-x64':
     nodes:
-      'main':
+      'main.vm.local':
         prefab: 'centos-64-x64'
