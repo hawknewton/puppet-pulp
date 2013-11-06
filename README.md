@@ -9,7 +9,7 @@ forge.
 ## Quickstart
 
 * Install an [epel repo](http://puppetforge.com/stahnma/epel)
-* Disable selinux
+* Disable [selinux](http://puppetforge.com/spiette/selinux)
 
 Install the server, admin client, and consumer on the same box:
 

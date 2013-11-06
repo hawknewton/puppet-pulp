@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'classes/shared_consumer_packages'
 require 'classes/shared_consumer_conf'
+require 'classes/shared_consumer_services'
 
 describe 'pulp::consumer' do
   let(:server) { 'server.myhost.com' }
@@ -12,6 +13,7 @@ describe 'pulp::consumer' do
     include_context :consumer_packages_present
     include_context :consumer_conf_present
     include_context :consumer_conf_default_template
+    include_context :consumer_services_running
   end
 
   context 'ensure => present' do
@@ -19,6 +21,7 @@ describe 'pulp::consumer' do
     include_context :consumer_packages_present
     include_context :consumer_conf_present
     include_context :consumer_conf_default_template
+    include_context :consumer_services_running
   end
 
   context 'ensure => 2.2.0-1.el6' do
@@ -28,6 +31,7 @@ describe 'pulp::consumer' do
     include_context :consumer_packages_pinned
     include_context :consumer_conf_present
     include_context :consumer_conf_default_template
+    include_context :consumer_services_running
   end
 
   context 'server => otherbox.myhost.com' do
@@ -48,5 +52,6 @@ describe 'pulp::consumer' do
 
     include_context :consumer_packages_absent
     include_context :consumer_conf_absent
+    include_context :consumer_services_stopped
   end
 end

@@ -16,6 +16,11 @@ class pulp::consumer($ensure = 'present', $server = $fqdn, $conf_template = 'pul
     file { '/etc/pulp/consumer/consumer.conf':
       ensure  => 'absent',
     }
+
+    service { 'pulp-agent':
+      ensure => 'stopped',
+      before => Package['pulp-agent']
+    }
   } else {
     file { '/etc/pulp/consumer/consumer.conf':
       ensure  => 'present',
@@ -24,6 +29,11 @@ class pulp::consumer($ensure = 'present', $server = $fqdn, $conf_template = 'pul
       mode    => '644',
       content => template($conf_template),
       require => Package['pulp-consumer-client']
+    }
+
+    service { 'pulp-agent':
+      ensure  => 'running',
+      require => Package['pulp-agent']
     }
   }
 }
