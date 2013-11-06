@@ -7,6 +7,9 @@ group :development, :test do
   gem 'puppet-lint', :require => false
   gem 'rspec-system-puppet', '~>2.0.0'
   gem 'rspec-system-serverspec'
+end
+
+group :development do
   gem 'guard-rspec'
 end
 
