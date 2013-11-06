@@ -1,7 +1,9 @@
 Gemfile.lock
 metadata.json
-spec/fixtures/modules/
+spec/fixtures/modules/pulp
 pkg/
 .rspec_system/
 .bundle/
 spec/fixtures/manifests/site.pp
+.ruby-version
+.ruby-gemset

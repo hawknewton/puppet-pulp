@@ -8,7 +8,6 @@ shared_context :server_packages_base do
   end
   it { should contain_package('pulp-server').with(package_params) }
   it { should contain_package('pulp-puppet-plugins').with(package_params) }
-  it { should contain_package('pulp-puppet-plugins').with(package_params) }
   it { should contain_package('pulp-rpm-plugins').with(package_params) }
   it { should contain_package('pulp-selinux').with(package_params) }
   it { should contain_package('httpd').with(ensure: 'present') }
