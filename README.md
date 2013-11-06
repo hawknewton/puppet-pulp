@@ -20,6 +20,11 @@ class { 'pulp::admin_client': } # Install admin client
 class { 'pulp::consumer': }     # Install pulp agent and client
 ```
 
+The default configuration is rather nieve.  It does nothing beyond what's outlined
+int The Pulp Project's [Installation page](http://pulp-user-guide.readthedocs.org/en/pulp-2.2/installation.html).
+If you want to use this for real you'll likely want to provide additional configuration
+to secure and customize your installation.
+
 ## Installation
 
 ### Prerequisites
