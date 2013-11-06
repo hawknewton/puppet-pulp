@@ -9,7 +9,7 @@ shared_context :server_services_running do
   it { should contain_service('mongod').with(service_params) }
   it { should contain_service('qpidd').with(service_params) }
 
-  example do
+  it do
     should contain_service('httpd').with({
       :ensure    => 'running',
       :subscribe => 'Exec[setup-pulp-db]'

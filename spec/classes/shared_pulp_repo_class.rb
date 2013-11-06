@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 shared_context :pulp_repo_class_enabled do
-  example do
+  it do
     should contain_class('pulp::repo').with({
       :ensure => 'enabled',
       :stage  => 'pulp_repo_setup'
@@ -10,7 +10,7 @@ shared_context :pulp_repo_class_enabled do
 end
 
 shared_context :pulp_repo_class_disabled do
-  example do
+  it do
     should contain_class('pulp::repo').with({
       :ensure => 'disabled',
       :stage  => 'pulp_repo_setup'
@@ -19,7 +19,7 @@ shared_context :pulp_repo_class_disabled do
 end
 
 shared_context :pulp_repo_class_absent do
-  example do
+  it do
     should contain_class('pulp::repo').with({
       :ensure => 'absent',
       :stage  => 'pulp_repo_setup'
