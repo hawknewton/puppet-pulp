@@ -108,3 +108,13 @@ class { 'pulp::consumer':
 **conf_template** -- optional
 
 If provided, use this template instead of the built-in `templates/consumer.conf.erb`
+
+
+## Developing
+
+If you want to issue a pull request to help me out, that'd be awesome.
+Make sure you have a fairly recent version of both vagrant and ruby.
+
+```
+rake spec spec:system
+```
