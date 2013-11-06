@@ -12,13 +12,13 @@ describe 'pulp::admin_client' do
   end
 
   context 'conf_template => test/admin.conf.erb' do
-    let(:params) { { conf_template: 'test/admin.conf.erb' } }
+    let(:params) { { :conf_template => 'test/admin.conf.erb' } }
 
     include_context :admin_client_conf_test_template
   end
 
   context 'ensure => present' do
-    let(:params) { { ensure: 'present' } }
+    let(:params) { { :ensure => 'present' } }
 
     include_context :admin_client_packages_present
     include_context :admin_client_conf_present
@@ -27,7 +27,7 @@ describe 'pulp::admin_client' do
 
   context 'ensure => 2.2.0-1.el6' do
     let(:version) { '2.2.0-1.el6' }
-    let(:params) { { ensure: version} }
+    let(:params) { { :ensure => version} }
 
     include_context :admin_client_packages_pinned
     include_context :admin_client_conf_present
@@ -35,7 +35,7 @@ describe 'pulp::admin_client' do
   end
 
   context 'ensure => absent' do
-    let(:params) { { ensure: 'absent' } }
+    let(:params) { { :ensure => 'absent' } }
 
     include_context :admin_client_packages_absent
     include_context :admin_client_conf_absent

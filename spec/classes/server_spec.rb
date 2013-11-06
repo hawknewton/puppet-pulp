@@ -16,7 +16,7 @@ describe 'pulp::server' do
   end
 
   context 'ensure => present' do
-    let(:params) { { ensure: 'present' } }
+    let(:params) { { :ensure => 'present' } }
     include_context :server_packages_present
     include_context :server_conf_present
     include_context :server_services_running
@@ -24,8 +24,8 @@ describe 'pulp::server' do
 
     context 'conf_template => test/server.conf.erb' do
       let(:params) do
-        { ensure: 'present',
-          conf_template: 'test/server.conf.erb' }
+        { :ensure => 'present',
+          :conf_template => 'test/server.conf.erb' }
       end
       include_context :server_conf_test_template
     end
@@ -36,7 +36,7 @@ describe 'pulp::server' do
   end
 
   context 'ensure => 2.2.0-1.el6' do
-    let(:params) { { ensure: version } }
+    let(:params) { { :ensure => version } }
     let(:version) { '2.2.0-1.el6' }
 
     include_context :server_packages_pinned
@@ -47,7 +47,7 @@ describe 'pulp::server' do
 
 
   context 'ensure => absent' do
-    let(:params) { { ensure: 'absent' } }
+    let(:params) { { :ensure => 'absent' } }
     include_context :server_packages_absent
     include_context :server_conf_absent
     include_context :server_services_stopped

@@ -3,11 +3,11 @@ require 'spec_helper'
 shared_context :server_conf_present do
   example do
     should contain_file('/etc/pulp/server.conf').with({
-      ensure: 'present',
-      owner: 'root',
-      group: 'root',
-      mode: '644',
-      require: 'Package[pulp-server]'
+      :ensure  => 'present',
+      :owner   => 'root',
+      :group   => 'root',
+      :mode    => '644',
+      :require => 'Package[pulp-server]'
     })
   end
 end
@@ -15,24 +15,22 @@ end
 shared_context :server_conf_absent do
   example do
     should contain_file('/etc/pulp/server.conf').with({
-      ensure: 'absent'
+      :ensure => 'absent'
     })
   end
 end
 
 shared_context :server_conf_test_template do
   example do
-    should contain_file('/etc/pulp/server.conf')
-      .with_content /^This is a test template/
+    should contain_file('/etc/pulp/server.conf').with_content /^This is a test template/
   end
 end
 
 shared_context :server_conf_default_template do
   let(:fqdn) { 'fqdn.myhost.com' }
-  let(:facts) { { fqdn: fqdn } }
+  let(:facts) { { :fqdn => fqdn } }
 
   example do
-    should contain_file('/etc/pulp/server.conf')
-      .with_content /^url: tcp:\/\/#{fqdn}:5672/
+    should contain_file('/etc/pulp/server.conf').with_content /^url: tcp:\/\/#{fqdn}:5672/
   end
 end
