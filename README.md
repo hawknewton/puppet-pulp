@@ -137,3 +137,7 @@ Make sure you have a fairly recent version of both vagrant and ruby, then do thi
 bundle install
 bundle exec rake spec spec:system
 ```
+
+## TODO
+* Fail when we're being installed on an unsupported OS
+* Enable the installation of puppet modules on a puppetmaster
