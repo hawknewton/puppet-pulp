@@ -4,10 +4,9 @@ This module makes an honest attempt at installing the
 [The Pulp Repository](http://www.pulpproject.org/), including it's consumer and
 administration clients, onto a redhat system of your choice.  The Pulp Repo
 brings to the table (among other things) the ability to host an internal puppet
-forge.
+repository (like puppetforge but without the pretty web interface).
 
 ## Quickstart
-
 * Install an [epel repo](http://puppetforge.com/stahnma/epel)
 * Disable [selinux](http://puppetforge.com/spiette/selinux)
 
@@ -21,13 +20,27 @@ class { 'pulp::consumer': }     # Install pulp agent and client
 ```
 
 The default configuration is rather nieve.  It does nothing beyond what's outlined
-int The Pulp Project's [Installation page](http://pulp-user-guide.readthedocs.org/en/pulp-2.2/installation.html).
+int The Pulp's [installation section](http://pulp-user-guide.readthedocs.org/en/pulp-2.2/installation.html).
 If you want to use this for real you'll likely want to provide additional configuration
 to secure and customize your installation.
 
 ## Installation
+Detailed information is avaialble in the [installation section](https://pulp-user-guide.readthedocs.org/en/pulp-2.2/installation.html)
+of The Pulp [user guide](https://pulp-user-guide.readthedocs.org/en/pulp-2.2/index.html)
 
-### Prerequisites
+### Supported Operating Systems
+
+#### Server
+* RHEL 6
+* Fedora 17 & 18
+* CentOS 6
+
+#### Consumer
+* RHEL 5 & 6
+* Fedora 17 & 18
+* CentOS 6
+
+### Module Prerequisites
 This module needs a few thing to make it go:
 * The EPEL repo of your choice.  I tested using `stahnma/epel`, which seems as
   good as any.
@@ -117,9 +130,10 @@ If provided, use this template instead of the built-in `templates/consumer.conf.
 
 ## Developing
 
-If you want to issue a pull request to help me out, that'd be awesome.
-Make sure you have a fairly recent version of both vagrant and ruby.
+If you want to issue a pull request, that'd be awesome.
+Make sure you have a fairly recent version of both vagrant and ruby, then do this:
 
 ```
-rake spec spec:system
+bundle install
+bundle exec rake spec spec:system
 ```
