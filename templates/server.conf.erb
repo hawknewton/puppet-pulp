@@ -221,7 +221,7 @@ db_config: /etc/pulp/logging/db.cfg
 # unbind_timeout: messaging timeout in seconds for unbind requests
 
 [messaging]
-url: tcp://<%= @fqdn %>:5672
+url: tcp://<%= scope.lookupvar('::fqdn') %>:5672
 cacert: /etc/pki/qpid/ca/ca.crt
 clientcert: /etc/pki/qpid/client/client.pem
 topic_exchange: 'amq.topic'
