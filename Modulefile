@@ -1,5 +1,5 @@
 name    'hawknewton-pulp'
-version '0.0.1'
+version '0.0.2'
 source 'https://github.com/hawknewton/puppet-pulp'
 author 'hawknewton'
 license 'Apache License, Version 2.0'
