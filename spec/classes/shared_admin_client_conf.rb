@@ -19,9 +19,7 @@ shared_context :admin_client_conf_test_template do
 end
 
 shared_context :admin_client_conf_default_template do
-  let(:facts) { { :fqdn => 'fqdn.myhost.com' } }
-
   it do
-    should contain_file('/etc/pulp/admin/admin.conf').with_content /^host = fqdn.myhost.com/
+    should contain_file('/etc/pulp/admin/admin.conf').with_content /^host = #{server}/
   end
 end

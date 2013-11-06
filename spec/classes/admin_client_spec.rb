@@ -3,6 +3,9 @@ require 'classes/shared_admin_client_packages'
 require 'classes/shared_admin_client_conf'
 
 describe 'pulp::admin_client' do
+  let(:server) { 'fqdn.myhost.com' }
+  let(:facts) { { :fqdn => server } }
+
   it { should_not be_nil }
 
   context 'with default params' do
@@ -39,5 +42,12 @@ describe 'pulp::admin_client' do
 
     include_context :admin_client_packages_absent
     include_context :admin_client_conf_absent
+  end
+
+  context 'server => otherserver.myhost.com' do
+    let(:server) { 'othersrever.myhost.com' }
+    let(:params) { { :server => server } }
+
+    include_context :admin_client_conf_default_template
   end
 end

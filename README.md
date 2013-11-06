@@ -83,6 +83,8 @@ class { 'pulp::admin_client':
 * `2.2.0-1.el6` (for example): pin the client to a specific verison
 * `absent`: remove the admin client
 
+**server** -- optional, defaults to the current host
+
 **conf_template**  -- optional
 
 If provided, use this template instead of the built-in `templates/admon.conf.erb`

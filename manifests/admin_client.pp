@@ -1,9 +1,12 @@
-class pulp::admin_client($ensure = 'present', $conf_template = '') {
+class pulp::admin_client($ensure = 'present', $server = $fqdn, $conf_template = '') {
   package { [ 'pulp-admin-client',
               'pulp-puppet-admin-extensions',
               'pulp-rpm-admin-extensions']:
     ensure => $ensure
   }
+
+  # For the template
+  $pulp_server = $server
 
   if $conf_template == '' {
     $template = 'pulp/admin.conf.erb'
