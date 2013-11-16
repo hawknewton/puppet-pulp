@@ -20,35 +20,25 @@ module PuppetPulp
       login
 
       output = `pulp-admin puppet repo list --details`
-      # Eat the 4 line header
-      body = output.split("\n")[4..-1]
-
-      return {} if body.nil?
-
-      #Split on blank lines between repos
-      yamls = body.join("\n").split("\n\n")
-
-      repos = yamls.map do |x|
-        y = YAML.load x
-
-        description = y['Description'] == 'None' ? nil : y['Description']
-        distributors_config = y['Distributors']['Config']
-        importers_config = y['Importers']['Config']
+      repos = parse_repos(output).map do |repo|
+        description = repo['Description'] == 'None' ? nil : repo['Description']
+        distributors_config = repo['Distributors']['Config']
+        importers_config = repo['Importers']['Config']
         feed = importers_config['Feed'] unless importers_config.nil?
-        notes = y['Notes'].nil? ? { } : y['Notes']
+        notes = repo['Notes'].nil? ? { } : repo['Notes']
 
         queries = importers_config && importers_config['Queries'] || ''
         queries = queries.split(/,/).map { |x| x.strip }
 
         serve_http = distributors_config['Serve Http'] unless distributors_config.nil?
-        serve_http ||= true
+        serve_http = serve_http.is_a?(String) ? serve_http == 'True' : true
 
         serve_https = distributors_config['Serve Https'] unless distributors_config.nil?
-        serve_https = serve_https == true ? true : false
+        serve_https = serve_https == 'True'
 
         props = {
-          :id => y['Id'],
-          :display_name => y['Display Name'],
+          :id => repo['Id'],
+          :display_name => repo['Display Name'],
           :description => description,
           :notes => notes,
           :feed => feed,
@@ -90,6 +80,35 @@ module PuppetPulp
 
     def set_property(id, key, value)
       `pulp-admin puppet repo update --repo-id=#{id} --#{key}=\"#{value}\"`
+    end
+
+    private
+
+    def parse_repos(str)
+      repos = str.split /\n\n/
+
+      #Throw away the header
+      repos.shift
+
+      repos = repos.map { |x| x.split /\n/ }
+      repos.map { |x| parse_lines x }
+    end
+
+    def parse_lines(lines, indent = '')
+      result = {}
+      while lines && line = lines.shift
+        if line =~ /^#{indent}([^\s][^:]+):(.*)$/
+          value = $2.strip
+          if value.empty?
+            value = parse_lines(lines, "#{indent}  ")
+          end
+          result[$1] = value
+        else
+          lines.unshift line
+          break
+        end
+      end
+      result.empty? ? nil : result
     end
   end
 end
