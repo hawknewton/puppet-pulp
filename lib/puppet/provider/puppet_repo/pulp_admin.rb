@@ -18,11 +18,13 @@ Puppet::Type::type(:puppet_repo).provide(:pulp_admin) do
     @pulp_admin.repos.has_key? @resource[:id]
   end
 
-  def display_name
-    @pulp_admin.repos[@resource[:id]].display_name
-  end
-
-  def display_name=(display_name)
-    @pulp_admin.repos[@resource[:id]].display_name = display_name
+  [ :display_name,
+    :description,
+    :notes,
+    :queries,
+    :serve_http,
+    :serve_https ].each do |x|
+    define_method(x) { @pulp_admin.repos[@resource[:id]].send x }
+    define_method("#{x}=") { |v| @pulp_admin.repos[@resource[:id]].send "#{x}=", v }
   end
 end

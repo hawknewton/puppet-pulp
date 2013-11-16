@@ -13,20 +13,20 @@ Puppet::Type.newtype(:puppet_repo) do
   end
 
   newproperty(:display_name)
-  newparam(:description)
-  newparam(:notes) do
+  newproperty(:description)
+  newproperty(:notes) do
     validate do |v|
       raise 'notes must be a map' unless v.is_a? Hash
     end
   end
 
-  newparam(:queries) do
+  newproperty(:queries) do
     munge do |v|
       [v] unless v.is_a? Array
     end
   end
 
-  newparam(:serve_http) do
+  newproperty(:serve_http) do
     munge do |v|
       v.to_s == 'true'
     end
@@ -36,13 +36,13 @@ Puppet::Type.newtype(:puppet_repo) do
     end
   end
 
-  newparam(:serve_https) do
+  newproperty(:serve_https) do
     validate do |v|
       raise 'serve_https must be a boolean value' unless !!v == v
     end
   end
 
-  newparam(:feed) do
+  newproperty(:feed) do
     validate do |v|
       raise 'feed must be a valid url' unless v =~ URI::regexp
     end
