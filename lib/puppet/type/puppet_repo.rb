@@ -12,7 +12,7 @@ Puppet::Type.newtype(:puppet_repo) do
     end
   end
 
-  newparam(:display_name)
+  newproperty(:display_name)
   newparam(:description)
   newparam(:notes) do
     validate do |v|
