@@ -15,40 +15,40 @@ describe PuppetPulp::PulpAdmin do
         let(:display_name) { 'new repo display name' }
 
         before do
-          allow(subject).to receive(:`)
-            .with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\"")
-            .and_return "Successfully created repository [#{repo_id}]"
+          allow(subject).to receive(:`).
+            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\"").
+            and_return "Successfully created repository [#{repo_id}]"
 
-          allow(subject).to receive(:`)
-            .with('pulp-admin login -u test-login -p test-password')
-            .and_return 'Successfully logged in.'
+          allow(subject).to receive(:`).
+            with('pulp-admin login -u test-login -p test-password').
+            and_return 'Successfully logged in.'
         end
 
         it 'should login' do
-          expect(subject).to receive(:`)
-            .with('pulp-admin login -u test-login -p test-password')
-            .and_return 'Successfully logged in.'
-          subject.create repo_id, { display_name: display_name }
+          expect(subject).to receive(:`).
+            with('pulp-admin login -u test-login -p test-password').
+            and_return 'Successfully logged in.'
+          subject.create repo_id, { :display_name => display_name }
         end
 
         it 'should create the repository' do
-          expect(subject).to receive(:`)
-            .with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\"")
-            .and_return "Successfully created repository [#{repo_id}]"
+          expect(subject).to receive(:`).
+            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\"").
+            and_return "Successfully created repository [#{repo_id}]"
 
-          subject.create repo_id, { display_name: display_name }
+          subject.create repo_id, { :display_name => display_name }
         end
 
         context 'when repository creation fails' do
           before do
-            allow(subject).to receive(:`)
-              .with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\"")
-              .and_return "Stuff did not happen"
+            allow(subject).to receive(:`).
+              with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\"").
+              and_return "Stuff did not happen"
           end
 
           it 'should raise an exception' do
-            expect { subject.create repo_id, { display_name: display_name } }
-              .to raise_error /Stuff did not happen/
+            expect { subject.create repo_id, { :display_name => display_name } }.
+              to raise_error /Stuff did not happen/
           end
         end
       end
@@ -59,24 +59,24 @@ describe PuppetPulp::PulpAdmin do
     before { }
 
     it 'should login' do
-      expect(subject).to receive(:`)
-        .with('pulp-admin login -u test-login -p test-password')
-        .and_return 'Successfully logged in.'
+      expect(subject).to receive(:`).
+        with('pulp-admin login -u test-login -p test-password').
+        and_return 'Successfully logged in.'
       subject.login
     end
 
     it 'should only login once' do
-      expect(subject).to receive(:`)
-        .with('pulp-admin login -u test-login -p test-password').once
-        .and_return 'Successfully logged in.'
+      expect(subject).to receive(:`).
+        with('pulp-admin login -u test-login -p test-password').once.
+        and_return 'Successfully logged in.'
       subject.login
       subject.login
     end
 
     it 'should raise an error if login is unsuccessful' do
-      expect(subject).to receive(:`)
-        .with('pulp-admin login -u test-login -p test-password')
-        .and_return 'Invalid Username or Password'
+      expect(subject).to receive(:`).
+        with('pulp-admin login -u test-login -p test-password').
+        and_return 'Invalid Username or Password'
 
       expect { subject.login }.to raise_error /Invalid Username or Password/
 
@@ -85,16 +85,16 @@ describe PuppetPulp::PulpAdmin do
 
   describe '#repos' do
     before do
-      allow(subject).to receive(:`)
-        .with('pulp-admin login -u test-login -p test-password')
-        .and_return 'Successfully logged in.'
+      allow(subject).to receive(:`).
+        with('pulp-admin login -u test-login -p test-password').
+        and_return 'Successfully logged in.'
     end
 
     context 'with no repos defined' do
       before do
-        allow(subject).to receive(:`)
-          .with('pulp-admin puppet repo list --details')
-          .and_return File.read("#{fixture_path}/puppet_empty.txt")
+        allow(subject).to receive(:`).
+          with('pulp-admin puppet repo list --details').
+          and_return File.read("#{fixture_path}/puppet_empty.txt")
       end
 
       it 'should return an empty list' do
@@ -104,21 +104,21 @@ describe PuppetPulp::PulpAdmin do
 
     context 'with repos defined' do
       before do
-        allow(subject).to receive(:`)
-          .with('pulp-admin puppet repo list --details')
-          .and_return File.read("#{fixture_path}/puppet_repos.txt")
+        allow(subject).to receive(:`).
+          with('pulp-admin puppet repo list --details').
+          and_return File.read("#{fixture_path}/puppet_repos.txt")
       end
 
       it 'should login' do
-        expect(subject).to receive(:`)
-          .with('pulp-admin login -u test-login -p test-password')
-          .and_return 'Successfully logged in.'
+        expect(subject).to receive(:`).
+          with('pulp-admin login -u test-login -p test-password').
+          and_return 'Successfully logged in.'
         subject.repos
       end
 
       it 'should list repos' do
-        expect(subject).to receive(:`)
-          .with('pulp-admin puppet repo list --details')
+        expect(subject).to receive(:`).
+          with('pulp-admin puppet repo list --details')
 
         subject.repos
       end
@@ -164,8 +164,8 @@ describe PuppetPulp::PulpAdmin do
 
       describe '#display_name=' do
         it 'should call pulp-admin to set the display name' do
-          expect(subject).to receive(:`)
-            .with 'pulp-admin puppet repo update --repo-id=balls --display-name="awesome name"'
+          expect(subject).to receive(:`).
+            with 'pulp-admin puppet repo update --repo-id=balls --display-name="awesome name"'
 
           subject.repos['balls'].display_name = 'awesome name'
         end
