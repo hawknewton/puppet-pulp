@@ -5,6 +5,7 @@ group :puppet_rspec do
         all_after_pass: true,
         all_on_start: true,
         focus_on_failed: false do
+
     watch(%r{^spec/classes/shared_.+\.rb}) { 'spec/classes' }
     watch(%r{^spec/(.+_spec\.rb)$}) { |m| "spec/#{m[1]}" }
 

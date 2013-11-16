@@ -1,0 +1,52 @@
++----------------------------------------------------------------------+
+                          Puppet Repositories
++----------------------------------------------------------------------+
+
+Id:                  balls
+Display Name:        balls display name
+Description:         balls description
+Content Unit Counts:
+Notes:
+  Name: value
+Importers:
+  Config:
+    Feed: http://feed.com
+    Queries: query1, query2, query3
+  Id:               puppet_importer
+  Importer Type Id: puppet_importer
+  Last Sync:        None
+  Repo Id:          balls
+  Scheduled Syncs:
+Distributors:
+  Auto Publish:        True
+  Config:
+    Serve Http:  True
+    Serve Https: True
+  Distributor Type Id: puppet_distributor
+  Id:                  puppet_distributor
+  Last Publish:        None
+  Relative Path:       puppet/balls/
+  Repo Id:             balls
+  Scheduled Publishes:
+
+Id:                  balls2
+Display Name:        balls2
+Description:         None
+Content Unit Counts:
+Notes:
+Importers:
+  Config:
+  Id:               puppet_importer
+  Importer Type Id: puppet_importer
+  Last Sync:        None
+  Repo Id:          balls2
+  Scheduled Syncs:
+Distributors:
+  Auto Publish:        True
+  Config:
+  Distributor Type Id: puppet_distributor
+  Id:                  puppet_distributor
+  Last Publish:        None
+  Relative Path:       puppet/balls2/
+  Repo Id:             balls2
+  Scheduled Publishes:
