@@ -60,7 +60,36 @@ module PuppetPulp
           me.set_property props[:id], 'display-name', display_name
         end
 
-        singleton_class.send(:define_method, :display_name=, set_display_name)
+        set_description = lambda do |description|
+          me.set_property props[:id], 'description', description
+        end
+
+        set_serve_http = lambda do |serve_http|
+          me.set_property props[:id], 'serve_http', serve_http
+        end
+
+        set_serve_https = lambda do |serve_https|
+          me.set_property props[:id], 'serve_https', serve_https
+        end
+
+        set_queries = lambda do |arr|
+          me.set_property props[:id], 'queries', arr.join(',')
+        end
+
+        set_notes = lambda do |map|
+          notes = []
+          map.each do |k,v|
+            notes << "--notes \"#{k}=#{v}\""
+          end
+          me.update_repo props[:id], notes.join(' ')
+        end
+
+        singleton_class.send :define_method, :display_name=, set_display_name
+        singleton_class.send :define_method, :description=, set_description
+        singleton_class.send :define_method, :serve_http=, set_serve_http
+        singleton_class.send :define_method, :serve_https=, set_serve_https
+        singleton_class.send :define_method, :queries=, set_queries
+        singleton_class.send :define_method, :notes=, set_notes
 
         result
       end
@@ -80,6 +109,10 @@ module PuppetPulp
 
     def set_property(id, key, value)
       `pulp-admin puppet repo update --repo-id=#{id} --#{key}=\"#{value}\"`
+    end
+
+    def update_repo(id, value)
+      `pulp-admin puppet repo update --repo-id=#{id} #{value}`
     end
 
     private

@@ -132,7 +132,6 @@ describe provider_class do
       end
     end
 
-
     context 'and a new serve https value' do
       let(:new_serve_https) { false }
 

@@ -170,6 +170,77 @@ describe PuppetPulp::PulpAdmin do
           subject.repos['balls'].display_name = 'awesome name'
         end
       end
+
+      describe '#description=' do
+        it 'should call pulp-admint o set the description' do
+          expect(subject).to receive(:`).
+            with 'pulp-admin puppet repo update --repo-id=balls --description="awesome description"'
+
+          subject.repos['balls'].description = 'awesome description'
+        end
+      end
+
+      describe '#serve_http=' do
+        it 'should call pulp-admin o set serve_http' do
+          expect(subject).to receive(:`).
+            with 'pulp-admin puppet repo update --repo-id=balls --serve_http="false"'
+
+          subject.repos['balls'].serve_http = false
+        end
+      end
+
+      describe '#serve_https=' do
+        it 'should call pulp-admin to set serve_https' do
+          expect(subject).to receive(:`).
+            with 'pulp-admin puppet repo update --repo-id=balls --serve_https="false"'
+
+          subject.repos['balls'].serve_https = false
+        end
+      end
+
+      describe '#serve_queries=' do
+        it 'should call pulp-admin to set notes' do
+          expect(subject).to receive(:`).
+            with 'pulp-admin puppet repo update --repo-id=balls --notes "name2=value2" --notes "name1=value1"'
+          subject.repos['balls'].notes = {
+            'name1' => 'value1',
+            'name2' => 'value2'
+          }
+        end
+
+        it 'should pass an an empty value' do
+          expect(subject).to receive(:`).
+            with 'pulp-admin puppet repo update --repo-id=balls --notes "name1="'
+          subject.repos['balls'].notes = {
+            'name1' => ''
+          }
+        end
+
+        context 'when notes map is empty' do
+          it 'should not update repo' do
+            expect(subject).to_not receive(:`).with do |arg|
+              arg =~ /puppet-admin repo update/
+            end
+            subject.repos['balls'].queries = []
+          end
+        end
+      end
+
+      describe '#notes=' do
+        it 'should call pulp-admin to set queries' do
+          expect(subject).to receive(:`).
+            with 'pulp-admin puppet repo update --repo-id=balls --queries="query5,query6,query7"'
+          subject.repos['balls'].queries = ['query5', 'query6', 'query7']
+        end
+
+        context 'when queries array is empty' do
+          it 'should call --queries with an empty string' do
+            expect(subject).to receive(:`).
+              with 'pulp-admin puppet repo update --repo-id=balls --queries=""'
+            subject.repos['balls'].queries = []
+          end
+        end
+      end
     end
   end
 end
