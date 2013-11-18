@@ -5,21 +5,111 @@ provider_class = type.provider :pulp_admin
 puts provider_class.inspect
 
 describe provider_class do
-  subject { provider_class.new(type.new({:id => repo_id}.merge params)) }
+  subject { provider_class.new(type.new(default_params.merge params)) }
+
+  let(:default_params) do
+    { :id => repo_id,
+      :login => 'test-login',
+      :password => 'test-password' }
+  end
 
   let(:repo_id) { 'test-repo_id' }
   let(:params) { { } }
 
   describe '#create' do
-    subject { provider_class.new(type.new({:id => repo_id}.merge params)).create }
+    subject { provider_class.new(type.new(default_params.merge params)).create }
     context 'given a repo id' do
+      it 'should pass credentials to PulpAdmin' do
+        expect(PuppetPulp::PulpAdmin).
+          to receive(:new).with('test-login', 'test-password').
+          and_call_original
+        allow_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create)
+
+        subject
+      end
+
+      it 'should pas the repo id' do
+        expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,params|
+          expect(repo_id).to eq repo_id
+        end
+        subject
+      end
+
       context 'and a display name' do
         let(:params) { { :display_name => display_name } }
         let(:display_name) { 'test display name' }
 
         it 'should call PulpAdmin#create' do
-          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create).
-            with repo_id, { :display_name => display_name }
+          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,options|
+            expect(options[:display_name]).to eq display_name
+          end
+
+          subject
+        end
+      end
+
+      context 'and a description' do
+        let(:params) { { :description => description } }
+        let(:description) { 'test description' }
+
+        it 'should call PulpAdmin#create' do
+          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,options|
+            expect(options[:description]).to eq description
+          end
+
+          subject
+        end
+      end
+
+      context 'and notes' do
+        let(:params) { { :notes => notes } }
+        let(:notes) { { 'name1' => 'value1', 'name2' => 'value2' } }
+
+        it 'should call PulpAdmin#create' do
+          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,options|
+            notes = options[:notes]
+            expect(notes['name1']).to eq 'value1'
+            expect(notes['name2']).to eq 'value2'
+          end
+
+          subject
+        end
+      end
+
+      context 'and queries' do
+        let(:params) { { :queries => queries } }
+        let(:queries) { ['query1', 'query2'] }
+
+        it 'should call PulpAdmin#create' do
+          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,options|
+            expect(options[:queries]).to eq queries
+          end
+
+          subject
+        end
+      end
+
+      context 'and serve_http' do
+        let(:params) { { :serve_http => serve_http } }
+        let(:serve_http) { true }
+
+        it 'should call PulpAdmin#create' do
+          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,options|
+            expect(options[:serve_http]).to eq serve_http
+          end
+
+          subject
+        end
+      end
+
+      context 'and serve_https' do
+        let(:params) { { :serve_https => serve_https } }
+        let(:serve_https) { true }
+
+        it 'should call PulpAdmin#create' do
+          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,options|
+            expect(options[:serve_https]).to eq serve_https
+          end
 
           subject
         end
@@ -27,8 +117,29 @@ describe provider_class do
     end
   end
 
+  describe '#destroy' do
+    subject { provider_class.new(type.new(default_params.merge params)).destroy }
+    context 'given a repo id' do
+      it 'should call PulpAdmin#destroy' do
+          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:destroy).
+            with repo_id
+
+          subject
+      end
+
+      it 'should pass credentials to PulpAdmin' do
+        expect(PuppetPulp::PulpAdmin).
+          to receive(:new).with('test-login', 'test-password').
+          and_call_original
+        allow_any_instance_of(PuppetPulp::PulpAdmin).to receive(:destroy)
+
+        subject
+      end
+    end
+  end
+
   describe '#exists?' do
-    subject { provider_class.new(type.new({:id => repo_id}.merge params)).exists? }
+    subject { provider_class.new(type.new(default_params.merge params)).exists? }
 
     context 'given a missing repo id' do
       before do
@@ -37,6 +148,13 @@ describe provider_class do
       end
 
       it { should be_false }
+
+      it 'should pass credentials to PulpAdmin' do
+        expect(PuppetPulp::PulpAdmin).
+          to receive(:new).with('test-login', 'test-password').
+          and_call_original
+        subject
+      end
     end
 
     context 'given an existing repo id' do
@@ -46,6 +164,13 @@ describe provider_class do
       end
 
       it { should be_true }
+
+      it 'should pass credentials to PulpAdmin' do
+        expect(PuppetPulp::PulpAdmin).
+          to receive(:new).with('test-login', 'test-password').
+          and_call_original
+        subject
+      end
     end
   end
 

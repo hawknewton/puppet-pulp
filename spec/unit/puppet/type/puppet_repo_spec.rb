@@ -3,10 +3,12 @@ require 'spec_helper'
 type = Puppet::Type.type(:puppet_repo)
 
 describe type do
-  subject { type.new({:name => name}.merge params) }
+  subject { type.new({:name => name, :login => login, :password => password}.merge params) }
   let(:params) { { } }
 
   context 'given an invalid name' do
+    let(:login) { 'test-login' }
+    let(:password) { 'test-password' }
     let(:name) { 'test 123' }
 
     example do
@@ -14,8 +16,10 @@ describe type do
     end
   end
 
-  context 'given a valid name' do
+  context 'given a valid name, login, and password' do
     let(:name) { 'test_123' }
+    let(:login) { 'test-login' }
+    let(:password) { 'test-password' }
 
     example do
       expect { subject }.to_not raise_error
@@ -98,6 +102,25 @@ describe type do
         expect { subject }.to_not raise_error
       end
     end
+  end
 
+  context 'with no login' do
+    let(:login) { '' }
+    let(:password) { 'test-password' }
+    let(:name) { 'good-name' }
+
+    example do
+      expect { subject }.to raise_error Puppet::Error, /must specify login/
+    end
+  end
+
+  context 'with no password' do
+    let(:login) { 'test-login' }
+    let(:password) { '' }
+    let(:name) { 'good-name' }
+
+    example do
+      expect { subject }.to raise_error Puppet::Error, /must specify password/
+    end
   end
 end

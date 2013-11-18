@@ -21,8 +21,9 @@ Puppet::Type.newtype(:puppet_repo) do
   end
 
   newproperty(:queries) do
+    queries = []
     munge do |v|
-      [v] unless v.is_a? Array
+      queries << v
     end
   end
 
@@ -46,5 +47,13 @@ Puppet::Type.newtype(:puppet_repo) do
     validate do |v|
       raise 'feed must be a valid url' unless v =~ URI::regexp
     end
+  end
+
+   newparam(:login)
+   newparam(:password)
+
+  validate do
+    fail 'must specify login' if self[:login].to_s.empty?
+    fail 'must specify password' if self[:password].to_s.empty?
   end
 end

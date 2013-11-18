@@ -11,63 +11,122 @@ describe PuppetPulp::PulpAdmin do
   describe '#create' do
     context 'with a repo id' do
       let(:repo_id) { 'new_repo' }
-      context 'and display name' do
-        let(:display_name) { 'new repo display name' }
 
+      before do
+        allow(subject).to receive(:`).
+          with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\"").
+          and_return "Successfully created repository [#{repo_id}]"
+
+        allow(subject).to receive(:`).
+          with('pulp-admin login -u test-login -p test-password').
+          and_return 'Successfully logged in.'
+      end
+
+      it 'should login' do
+        expect(subject).to receive(:`).
+          with('pulp-admin login -u test-login -p test-password').
+          and_return 'Successfully logged in.'
+        subject.create repo_id
+      end
+
+      it 'should create the repository' do
+        expect(subject).to receive(:`).
+          with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\"").
+          and_return "Successfully created repository [#{repo_id}]"
+
+        subject.create repo_id
+      end
+
+      context 'when repository creation fails' do
         before do
           allow(subject).to receive(:`).
-            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\"").
+            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\"").
+            and_return "Stuff did not happen"
+        end
+
+        it 'should raise an exception' do
+          expect { subject.create repo_id }.
+            to raise_error /Stuff did not happen/
+        end
+      end
+
+      context 'with params' do
+        let(:display_name) { 'new repo display name' }
+        let(:description) { 'description' }
+        let(:queries) { ['query1', 'query2' ] }
+        let(:notes) { { 'name1' => 'value1', 'name2' => 'value2' } }
+
+        it 'should params to puppet-admin' do
+          expect(subject).to receive(:`).
+            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\" --description=\"#{description}\" --serve-http=\"true\" --serve-https=\"false\" --queries=query1,query2 --notes \"name2=value2\" --notes \"name1=value1\"").
             and_return "Successfully created repository [#{repo_id}]"
 
-          allow(subject).to receive(:`).
-            with('pulp-admin login -u test-login -p test-password').
-            and_return 'Successfully logged in.'
+          subject.create repo_id, {
+            :display_name => display_name,
+            :description => description,
+            :serve_http => 'true',
+            :serve_https => 'false',
+            :queries => queries,
+            :notes => notes
+          }
         end
+      end
+    end
+  end
 
-        it 'should login' do
+  describe '#destroy' do
+    context 'with a repo id' do
+      let(:repo_id) { 'new_repo' }
+      before do
+        allow(subject).to receive(:`).
+          with("pulp-admin puppet repo delete --repo-id=\"#{repo_id}\"").
+          and_return "Repository [#{repo_id}] successfully deleted"
+
+        allow(subject).to receive(:`).
+          with('pulp-admin login -u test-login -p test-password').
+          and_return 'Successfully logged in.'
+      end
+
+      it 'should login' do
+        expect(subject).to receive(:`).
+          with('pulp-admin login -u test-login -p test-password').
+          and_return 'Successfully logged in.'
+
+        subject.destroy repo_id
+      end
+
+      it 'should delete the specified repo' do
+        expect(subject).to receive(:`).
+          with("pulp-admin puppet repo delete --repo-id=\"#{repo_id}\"").
+          and_return "Repository [#{repo_id}] successfully deleted"
+        subject.destroy repo_id
+      end
+
+      context 'when repository removal fails' do
+        it 'should raise an error' do
           expect(subject).to receive(:`).
-            with('pulp-admin login -u test-login -p test-password').
-            and_return 'Successfully logged in.'
-          subject.create repo_id, { :display_name => display_name }
-        end
+            with("pulp-admin puppet repo delete --repo-id=\"#{repo_id}\"").
+            and_return "Couldn't delete repo"
 
-        it 'should create the repository' do
-          expect(subject).to receive(:`).
-            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\"").
-            and_return "Successfully created repository [#{repo_id}]"
-
-          subject.create repo_id, { :display_name => display_name }
-        end
-
-        context 'when repository creation fails' do
-          before do
-            allow(subject).to receive(:`).
-              with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\"").
-              and_return "Stuff did not happen"
-          end
-
-          it 'should raise an exception' do
-            expect { subject.create repo_id, { :display_name => display_name } }.
-              to raise_error /Stuff did not happen/
-          end
+          expect { subject.destroy repo_id }.to raise_error
         end
       end
     end
   end
 
   describe '#login' do
-    before { }
+    let(:subject) { described_class.new 'other-login', 'other-password' }
 
     it 'should login' do
       expect(subject).to receive(:`).
-        with('pulp-admin login -u test-login -p test-password').
+        with('pulp-admin login -u other-login -p other-password').
         and_return 'Successfully logged in.'
       subject.login
     end
 
     it 'should only login once' do
       expect(subject).to receive(:`).
-        with('pulp-admin login -u test-login -p test-password').once.
+        with('pulp-admin login -u other-login -p other-password').once.
         and_return 'Successfully logged in.'
       subject.login
       subject.login
@@ -75,7 +134,7 @@ describe PuppetPulp::PulpAdmin do
 
     it 'should raise an error if login is unsuccessful' do
       expect(subject).to receive(:`).
-        with('pulp-admin login -u test-login -p test-password').
+        with('pulp-admin login -u other-login -p other-password').
         and_return 'Invalid Username or Password'
 
       expect { subject.login }.to raise_error /Invalid Username or Password/
@@ -183,7 +242,7 @@ describe PuppetPulp::PulpAdmin do
       describe '#serve_http=' do
         it 'should call pulp-admin o set serve_http' do
           expect(subject).to receive(:`).
-            with 'pulp-admin puppet repo update --repo-id=balls --serve_http="false"'
+            with 'pulp-admin puppet repo update --repo-id=balls --serve-http="false"'
 
           subject.repos['balls'].serve_http = false
         end
@@ -192,7 +251,7 @@ describe PuppetPulp::PulpAdmin do
       describe '#serve_https=' do
         it 'should call pulp-admin to set serve_https' do
           expect(subject).to receive(:`).
-            with 'pulp-admin puppet repo update --repo-id=balls --serve_https="false"'
+            with 'pulp-admin puppet repo update --repo-id=balls --serve-https="false"'
 
           subject.repos['balls'].serve_https = false
         end

@@ -10,10 +10,43 @@ module PuppetPulp
       @password = password
     end
 
-    def create(repo_id, params)
+    def create(repo_id, params = {})
       login
-      output = `pulp-admin puppet repo create --repo-id="#{repo_id}" --display-name="#{params[:display_name]}"`
+
+      cmd = "pulp-admin puppet repo create --repo-id=\"#{repo_id}\""
+
+      if params[:display_name]
+        cmd << " --display-name=\"#{params[:display_name]}\""
+      end
+
+      if params[:description]
+        cmd << " --description=\"#{params[:description]}\""
+      end
+
+      if params[:serve_http]
+        cmd << " --serve-http=\"#{params[:serve_http]}\""
+      end
+
+      if params[:serve_https]
+        cmd << " --serve-https=\"#{params[:serve_https]}\""
+      end
+
+      if params[:queries]
+        cmd << " --queries=#{params[:queries].join ','}"
+      end
+
+      if params[:notes]
+        cmd << " " + params[:notes].map { |k,v| "--notes \"#{k}=#{v}\"" }.join(' ')
+      end
+
+      output = `#{cmd}`
       raise "Could not create repo: #{output}" unless output =~ /Successfully created repository \[#{repo_id}\]/
+    end
+
+    def destroy(repo_id)
+      login
+      output = `pulp-admin puppet repo delete --repo-id="#{repo_id}"`
+      raise "Could not remove repo: #{output}" unless output =~ /Repository \[#{repo_id}\] successfully deleted/
     end
 
     def repos
@@ -50,46 +83,36 @@ module PuppetPulp
         # UGARY -- We might want to be 1.8-able one day
         result = Object.new
         singleton_class = class << result; self end
+
+        setter = lambda do |val|
+          `pulp-admin puppet repo update --repo-id=#{props[:id]} #{val}`
+        end
+
+        #getters
         props.each do |k,v|
           singleton_class.send(:define_method, k, lambda { v })
         end
 
-        # Looks all busted ghetto, but makes it unimpossible to test
-        me = self
-        set_display_name = lambda do |display_name|
-          me.set_property props[:id], 'display-name', display_name
+        [:display_name,
+         :description,
+         :serve_http,
+         :serve_https].each do |m|
+          singleton_class.send :define_method, "#{m}=" do |v|
+            setter.call "--#{m.to_s.gsub('_', '-')}=\"#{v}\""
+          end
         end
 
-        set_description = lambda do |description|
-          me.set_property props[:id], 'description', description
+        singleton_class.send :define_method, :queries= do |arr|
+          setter.call "--queries=\"#{arr.join ','}\""
         end
 
-        set_serve_http = lambda do |serve_http|
-          me.set_property props[:id], 'serve_http', serve_http
-        end
-
-        set_serve_https = lambda do |serve_https|
-          me.set_property props[:id], 'serve_https', serve_https
-        end
-
-        set_queries = lambda do |arr|
-          me.set_property props[:id], 'queries', arr.join(',')
-        end
-
-        set_notes = lambda do |map|
+        singleton_class.send :define_method, :notes= do |map|
           notes = []
           map.each do |k,v|
             notes << "--notes \"#{k}=#{v}\""
           end
-          me.update_repo props[:id], notes.join(' ')
+          setter.call notes.join ' '
         end
-
-        singleton_class.send :define_method, :display_name=, set_display_name
-        singleton_class.send :define_method, :description=, set_description
-        singleton_class.send :define_method, :serve_http=, set_serve_http
-        singleton_class.send :define_method, :serve_https=, set_serve_https
-        singleton_class.send :define_method, :queries=, set_queries
-        singleton_class.send :define_method, :notes=, set_notes
 
         result
       end
@@ -105,14 +128,6 @@ module PuppetPulp
         output =~ /Successfully logged in/ || raise("Could not login: #{output}")
       end
       @logged_in = true
-    end
-
-    def set_property(id, key, value)
-      `pulp-admin puppet repo update --repo-id=#{id} --#{key}=\"#{value}\"`
-    end
-
-    def update_repo(id, value)
-      `pulp-admin puppet repo update --repo-id=#{id} #{value}`
     end
 
     private
