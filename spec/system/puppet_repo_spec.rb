@@ -14,8 +14,9 @@ describe 'puppet repo type' do
 
   it 'should create repos' do
     manifest = %q{
-      puppet_repo { 'test-repo-id':
-        display_name => 'test display name'
+      puppet_repo { 'bare-repo':
+        login => 'admin',
+        password => 'admin'
       }
     }
 

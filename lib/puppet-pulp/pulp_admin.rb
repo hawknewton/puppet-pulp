@@ -15,20 +15,11 @@ module PuppetPulp
 
       cmd = "pulp-admin puppet repo create --repo-id=\"#{repo_id}\""
 
-      if params[:display_name]
-        cmd << " --display-name=\"#{params[:display_name]}\""
-      end
-
-      if params[:description]
-        cmd << " --description=\"#{params[:description]}\""
-      end
-
-      if params[:serve_http]
-        cmd << " --serve-http=\"#{params[:serve_http]}\""
-      end
-
-      if params[:serve_https]
-        cmd << " --serve-https=\"#{params[:serve_https]}\""
+      [:display_name,
+       :description,
+       :serve_http,
+       :serve_https].each do |m|
+        cmd << " --#{m.to_s.gsub '_', '-'}=\"#{params[m]}\"" unless params[m].nil?
       end
 
       if params[:queries]
@@ -138,7 +129,9 @@ module PuppetPulp
       #Throw away the header
       repos.shift
 
-      repos = repos.map { |x| x.split /\n/ }
+      #We get extra lines at the end of the input
+      repos = repos.reject {|x| x.length == 1 }.map { |x| x.split /\n/ }
+
       repos.map { |x| parse_lines x }
     end
 
