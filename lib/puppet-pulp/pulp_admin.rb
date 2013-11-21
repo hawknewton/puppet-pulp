@@ -17,6 +17,7 @@ module PuppetPulp
 
       [:display_name,
        :description,
+       :feed,
        :serve_http,
        :serve_https].each do |m|
         cmd << " --#{m.to_s.gsub '_', '-'}=\"#{params[m]}\"" unless params[m].nil?
@@ -86,6 +87,7 @@ module PuppetPulp
 
         [:display_name,
          :description,
+         :feed,
          :serve_http,
          :serve_https].each do |m|
           singleton_class.send :define_method, "#{m}=" do |v|

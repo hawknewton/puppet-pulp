@@ -61,6 +61,21 @@ describe provider_class do
         end
       end
 
+      context 'and a feed' do
+        let(:params) { { :feed => feed } }
+        let(:feed) { 'http://feed.com' }
+
+        it 'should call PulpAdmin#create' do
+          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,options|
+            expect(options[:feed]).to eq feed
+          end
+
+          subject
+        end
+      end
+
+
+
       context 'and notes' do
         let(:params) { { :notes => notes } }
         let(:notes) { { 'name1' => 'value1', 'name2' => 'value2' } }
@@ -177,6 +192,7 @@ describe provider_class do
   context 'given an existing repo id' do
     let(:display_name) { 'test display name' }
     let(:description) { 'test display name' }
+    let(:feed) { 'http://randomfeed.com' }
     let(:notes) do
       { :note1 => 'value1',
         :note2 => 'value 2' }
@@ -189,6 +205,7 @@ describe provider_class do
       OpenStruct.new({
         :display_name => display_name,
         :description => description,
+        :feed => feed,
         :notes => notes,
         :queries => queries,
         :serve_http => serve_http,
@@ -203,6 +220,7 @@ describe provider_class do
 
     its(:display_name) { should eq display_name }
     its(:description) { should eq description }
+    its(:feed) { should eq feed }
     its(:notes) { should eq notes }
     its(:queries) { should eq queries }
     its(:serve_http) { should equal serve_http }
@@ -223,6 +241,15 @@ describe provider_class do
       it 'should call description= on the correct repo'  do
         expect(repo).to receive(:description=).with new_value
         subject.description = new_value
+      end
+    end
+
+    context 'and a new feed' do
+      let(:new_value) { 'http://newfeed.com' }
+
+      it 'should call feed= on the correct repo'  do
+        expect(repo).to receive(:feed=).with new_value
+        subject.feed = new_value
       end
     end
 

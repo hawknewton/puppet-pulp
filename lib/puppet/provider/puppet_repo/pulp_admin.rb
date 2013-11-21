@@ -5,6 +5,7 @@ Puppet::Type::type(:puppet_repo).provide(:pulp_admin) do
     pulp_admin.create @resource[:id], {
       :display_name => @resource[:display_name],
       :description => @resource[:description],
+      :feed => @resource[:feed],
       :notes => @resource[:notes],
       :queries => @resource[:queries],
       :serve_http => @resource[:serve_http],
@@ -22,6 +23,7 @@ Puppet::Type::type(:puppet_repo).provide(:pulp_admin) do
 
   [ :display_name,
     :description,
+    :feed,
     :notes,
     :queries,
     :serve_http,

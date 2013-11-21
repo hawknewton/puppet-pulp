@@ -46,6 +46,7 @@ describe 'puppet repo type' do
           ensure => 'present',
           display_name => 'test display name',
           description => 'test description',
+          feed => 'http://feed.com',
           notes => {'name1' => 'value 1', 'name2' => 'value 2'},
           queries => ['test query 1', 'test query 2'],
           serve_http => true,
@@ -67,6 +68,7 @@ describe 'puppet repo type' do
         expect(r.stdout).to match /^  Name1: value 1$/
         expect(r.stdout).to match /^  Name2: value 2$/
         expect(r.stdout).to match /^    Queries: test query 1, test query 2$/
+        expect(r.stdout).to match /^    Feed:\s*http:\/\/feed\.com$/
         expect(r.stdout).to match /^    Serve Http:  True$/
         expect(r.stdout).to match /^    Serve Https: True$/
       end
@@ -78,6 +80,7 @@ describe 'puppet repo type' do
           ensure => 'present',
           display_name => 'test display name',
           description => 'test description',
+          feed => 'http://feed.com',
           notes => {'name1' => 'value 1', 'name2' => 'value 2'},
           queries => ['test query 1', 'test query 2'],
           serve_http => true,
@@ -99,6 +102,7 @@ describe 'puppet repo type' do
         expect(r.stdout).to match /^  Name1: value 1$/
         expect(r.stdout).to match /^  Name2: value 2$/
         expect(r.stdout).to match /^    Queries: test query 1, test query 2$/
+        expect(r.stdout).to match /^    Feed:\s*http:\/\/feed\.com$/
         expect(r.stdout).to match /^    Serve Http:  True$/
         expect(r.stdout).to match /^    Serve Https: True$/
       end

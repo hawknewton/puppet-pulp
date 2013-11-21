@@ -53,17 +53,19 @@ describe PuppetPulp::PulpAdmin do
       context 'with params' do
         let(:display_name) { 'new repo display name' }
         let(:description) { 'description' }
+        let(:feed) { 'http://feed.com' }
         let(:queries) { ['query1', 'query2' ] }
         let(:notes) { { 'name1' => 'value1', 'name2' => 'value2' } }
 
         it 'should params to puppet-admin' do
           expect(subject).to receive(:`).
-            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\" --description=\"#{description}\" --serve-http=\"true\" --serve-https=\"false\" --queries=\"query1,query2\" --note \"name1=value1\" --note \"name2=value2\"").
+            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\" --description=\"#{description}\" --feed=\"#{feed}\" --serve-http=\"true\" --serve-https=\"false\" --queries=\"query1,query2\" --note \"name1=value1\" --note \"name2=value2\"").
             and_return "Successfully created repository [#{repo_id}]"
 
           subject.create repo_id, {
             :display_name => display_name,
             :description => description,
+            :feed => feed,
             :serve_http => 'true',
             :serve_https => 'false',
             :queries => queries,
@@ -192,6 +194,7 @@ describe PuppetPulp::PulpAdmin do
         expect(repo.id).to eq 'balls'
         expect(repo.display_name).to eq 'balls display name'
         expect(repo.description).to eq 'balls description'
+        expect(repo.feed).to eq 'http://feed.com'
         expect(repo.notes['Name']).to eq 'value'
         expect(repo.feed).to eq "http://feed.com"
         expect(repo.queries).to eq ['query1', 'query2', 'query3']
@@ -236,6 +239,15 @@ describe PuppetPulp::PulpAdmin do
             with 'pulp-admin puppet repo update --repo-id=balls --description="awesome description"'
 
           subject.repos['balls'].description = 'awesome description'
+        end
+      end
+
+      describe '#feed=' do
+        it 'should call pulp-admint o set the description' do
+          expect(subject).to receive(:`).
+            with 'pulp-admin puppet repo update --repo-id=balls --feed="http://feed.com"'
+
+          subject.repos['balls'].feed = 'http://feed.com'
         end
       end
 
