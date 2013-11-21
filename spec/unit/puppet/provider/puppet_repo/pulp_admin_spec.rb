@@ -28,7 +28,7 @@ describe provider_class do
         subject
       end
 
-      it 'should pas the repo id' do
+      it 'should pass the repo id' do
         expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,params|
           expect(repo_id).to eq repo_id
         end

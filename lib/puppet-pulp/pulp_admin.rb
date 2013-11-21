@@ -23,11 +23,11 @@ module PuppetPulp
       end
 
       if params[:queries]
-        cmd << " --queries=#{params[:queries].join ','}"
+        cmd << " --queries=\"#{params[:queries].join ','}\""
       end
 
       if params[:notes]
-        cmd << " " + params[:notes].keys.sort.map { |k| "--notes \"#{k}=#{params[:notes][k]}\"" }.join(' ')
+        cmd << " " + params[:notes].keys.sort.map { |k| "--note \"#{k}=#{params[:notes][k]}\"" }.join(' ')
       end
 
       output = `#{cmd}`
@@ -100,7 +100,7 @@ module PuppetPulp
         singleton_class.send :define_method, :notes= do |map|
           notes = []
           map.keys.sort.each do |k|
-            notes << "--notes \"#{k}=#{map[k]}\""
+            notes << "--note \"#{k}=#{map[k]}\""
           end
           setter.call notes.join ' '
         end

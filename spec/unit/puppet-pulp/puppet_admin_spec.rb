@@ -58,7 +58,7 @@ describe PuppetPulp::PulpAdmin do
 
         it 'should params to puppet-admin' do
           expect(subject).to receive(:`).
-            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\" --description=\"#{description}\" --serve-http=\"true\" --serve-https=\"false\" --queries=query1,query2 --notes \"name1=value1\" --notes \"name2=value2\"").
+            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\" --description=\"#{description}\" --serve-http=\"true\" --serve-https=\"false\" --queries=\"query1,query2\" --note \"name1=value1\" --note \"name2=value2\"").
             and_return "Successfully created repository [#{repo_id}]"
 
           subject.create repo_id, {
@@ -260,7 +260,7 @@ describe PuppetPulp::PulpAdmin do
       describe '#notes=' do
         it 'should call pulp-admin to set notes' do
           expect(subject).to receive(:`).
-            with 'pulp-admin puppet repo update --repo-id=balls --notes "name1=value1" --notes "name2=value2"'
+            with 'pulp-admin puppet repo update --repo-id=balls --note "name1=value1" --note "name2=value2"'
           subject.repos['balls'].notes = {
             'name1' => 'value1',
             'name2' => 'value2'
@@ -269,7 +269,7 @@ describe PuppetPulp::PulpAdmin do
 
         it 'should pass an an empty value' do
           expect(subject).to receive(:`).
-            with 'pulp-admin puppet repo update --repo-id=balls --notes "name1="'
+            with 'pulp-admin puppet repo update --repo-id=balls --note "name1="'
           subject.repos['balls'].notes = {
             'name1' => ''
           }

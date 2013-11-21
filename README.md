@@ -17,6 +17,24 @@ class { 'pulp': }               # Install pulp v2 yum repo
 clsss { 'pulp::server': }       # Install pulp server
 class { 'pulp::admin_client': } # Install admin client
 class { 'pulp::consumer': }     # Install pulp agent and client
+
+# Create a puppet repo
+puppet_repo { 'repo_id':
+  # Default pulp admin login/password
+  ensure       => 'present',
+  login        => 'admin',
+  password     => 'admin',
+  display_name => 'my test repo',
+  description  => "I lifted this repo from the pulp puppet module and didn't change the description!",
+  feed         => 'http://forge.puppetlabs.com',
+  queries      => ['query1', 'query2'],
+  serve_http   => true,
+  serve_https  => true
+  notes        => {
+    'note1' => 'value 1',
+    'note2' => 'value 2'
+  }
+}
 ```
 
 The default configuration is rather nieve.  It does nothing beyond what's outlined
@@ -126,6 +144,42 @@ class { 'pulp::consumer':
 **conf_template** -- optional
 
 If provided, use this template instead of the built-in `templates/consumer.conf.erb`
+
+#### Type puppet_repo
+Sets up a puppet module repository on your pulp server
+```
+puppet_repo { 'repo_id':
+  # Default pulp admin login/password
+  ensure       => 'present',
+  login        => 'admin',
+  password     => 'admin',
+  display_name => 'my test repo',
+  description  => "I lifted this repo from the pulp puppet module and didn't change the description!",
+  feed         => 'http://forge.puppetlabs.com',
+  queries      => ['query1', 'query2'],
+  serve_http   => true,
+  serve_https  => true
+  notes        => {
+    'note1' => 'value 1',
+    'note2' => 'value 2'
+  }
+}
+```
+
+##### Parameters:
+**ensure** -- required, may be `present` or `absent`
+* `present`: Ensure the repo exists
+* `absent`: Ensure the repo doesn't exist
+
+**login** -- Login to your pulp repo (think `pulp-admin login`)
+**password** -- Password to your pulp repo (think `pulp-admin login`)
+**display_name** -- optional, the display name for your repo
+**description** -- optional, the description for your repo
+**feed** -- optional, feed url for your repo
+**queries** -- optional, queries for your repo, see `pulp-admin puppet repo create`
+**serve_http** -- optional defaults to true, serve the repo via http
+**serve_https** -- optional optionals to false, serve the repo via https
+**notes** -- optional map, notes for your repo, see `pulp-admin puppet repo create`.  An empty map has no effect, to remove a note set the value to an empty string
 
 
 ## Developing
