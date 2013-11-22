@@ -38,6 +38,11 @@ describe type do
       example { expect { subject }.to_not raise_error }
     end
 
+    context 'and valid string serve_http' do
+      let(:params) { { :serve_http => 'true' } }
+      example { expect { subject }.to_not raise_error }
+    end
+
     context 'and an invalid serve_https' do
       let(:params) { { :serve_https => 'adf' } }
 
@@ -46,8 +51,13 @@ describe type do
       end
     end
 
-    context 'and a valid serve_https' do
+    context 'and a valid boolean serve_https' do
       let(:params) { { :serve_https => true } }
+      example { expect { subject }.to_not raise_error }
+    end
+
+    context 'and a valid string serve_https' do
+      let(:params) { { :serve_https => 'true' } }
       example { expect { subject }.to_not raise_error }
     end
 

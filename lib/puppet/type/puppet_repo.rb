@@ -33,13 +33,17 @@ Puppet::Type.newtype(:puppet_repo) do
     end
 
     validate do |v|
-      raise 'serve_http must be a boolean value' unless !!v == v
+      raise 'serve_http must be a boolean value' unless (['true', 'false'] & [v.to_s]).any?
     end
   end
 
   newproperty(:serve_https) do
+    munge do |v|
+      v.to_s == 'true'
+    end
+
     validate do |v|
-      raise 'serve_https must be a boolean value' unless !!v == v
+      raise 'serve_https must be a boolean value' unless (['true', 'false'] & [v.to_s]).any?
     end
   end
 
