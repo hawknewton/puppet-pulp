@@ -28,6 +28,7 @@ puppet_repo { 'repo_id':
   description  => "I lifted this repo from the pulp puppet module and didn't change the description!",
   feed         => 'http://forge.puppetlabs.com',
   queries      => ['query1', 'query2'],
+  schedules    => [ '2012-12-16T00:00Z/P1D', '2012-12-17T00:00Z/P1D' ]
   serve_http   => true,
   serve_https  => true
   notes        => {
@@ -157,6 +158,7 @@ puppet_repo { 'repo_id':
   description  => "I lifted this repo from the pulp puppet module and didn't change the description!",
   feed         => 'http://forge.puppetlabs.com',
   queries      => ['query1', 'query2'],
+  schedules    => [ '2012-12-16T00:00Z/P1D', '2012-12-17T00:00Z/P1D' ]
   serve_http   => true,
   serve_https  => true
   notes        => {
@@ -172,13 +174,23 @@ puppet_repo { 'repo_id':
 * `absent`: Ensure the repo doesn't exist
 
 **login** -- Login to your pulp repo (think `pulp-admin login`)
+
 **password** -- Password to your pulp repo (think `pulp-admin login`)
+
 **display_name** -- optional, the display name for your repo
+
 **description** -- optional, the description for your repo
+
 **feed** -- optional, feed url for your repo
-**queries** -- optional, queries for your repo, see `pulp-admin puppet repo create`
+
+**queries** -- optional list, queries for your repo, see `pulp-admin puppet repo create`
+
+**schedules** -- optional list, sync schedules for your repo in 8601 format
+
 **serve_http** -- optional defaults to true, serve the repo via http
-**serve_https** -- optional optionals to false, serve the repo via https
+
+**serve_https** -- optional defaults to false, serve the repo via https
+
 **notes** -- optional map, notes for your repo, see `pulp-admin puppet repo create`.  An empty map has no effect, to remove a note set the value to an empty string
 
 
@@ -195,3 +207,4 @@ bundle exec rake spec spec:system
 ## TODO
 * Fail when we're being installed on an unsupported OS
 * Enable the installation of puppet modules on a puppetmaster
+* Add rpm repo support

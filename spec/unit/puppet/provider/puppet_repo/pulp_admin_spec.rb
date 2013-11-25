@@ -104,6 +104,19 @@ describe provider_class do
         end
       end
 
+      context 'and schedules' do
+        let(:params) { { :schedules => schedules } }
+        let(:schedules) { ['2012-12-15T00:00Z/P1D', '2012-12-16T00:00Z/P1D'] }
+
+        it 'should call PulpAdmin#create' do
+          expect_any_instance_of(PuppetPulp::PulpAdmin).to receive(:create) do |repo_id,options|
+            expect(options[:schedules]).to eq schedules
+          end
+
+          subject
+        end
+      end
+
       context 'and serve_http' do
         let(:params) { { :serve_http => serve_http } }
         let(:serve_http) { true }
@@ -198,6 +211,7 @@ describe provider_class do
         :note2 => 'value 2' }
     end
     let(:queries) { ['query1', 'query2'] }
+    let(:schedules) { ['2012-12-15T00:00Z/P1D', '2012-12-16T00:00Z/P1D'] }
     let(:serve_http) { true }
     let(:serve_https) { true }
 
@@ -208,6 +222,7 @@ describe provider_class do
         :feed => feed,
         :notes => notes,
         :queries => queries,
+        :schedules => schedules,
         :serve_http => serve_http,
         :serve_https => serve_https
       })
@@ -223,6 +238,7 @@ describe provider_class do
     its(:feed) { should eq feed }
     its(:notes) { should eq notes }
     its(:queries) { should eq queries }
+    its(:schedules) { should eq schedules }
     its(:serve_http) { should equal serve_http }
     its(:serve_https) { should equal serve_https }
 
@@ -274,6 +290,14 @@ describe provider_class do
       end
     end
 
+    context 'and new schedules' do
+      let(:new_schedules) { ['2012-12-15T00:00Z/P1D', '2012-12-16T00:00Z/P1D' ] }
+
+      it 'should call schedules= on the correct repo' do
+        expect(repo).to receive(:schedules=).with new_schedules
+        subject.schedules = new_schedules
+      end
+    end
 
     context 'and a new serve http value' do
       let(:new_serve_http) { false }

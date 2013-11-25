@@ -33,6 +33,13 @@ module PuppetPulp
 
       output = `#{cmd}`
       raise "Could not create repo: #{output}" unless output =~ /Successfully created repository \[#{repo_id}\]/
+
+      if params[:schedules]
+        params[:schedules].each do |s|
+          output = `pulp-admin puppet repo sync schedules create --repo-id=\"#{repo_id}\" -s \"#{s}\"`
+          raise "Could not create schedule: #{output}" unless output =~ /Schedule successfully created/
+        end
+      end
     end
 
     def destroy(repo_id)
@@ -48,12 +55,16 @@ module PuppetPulp
       repos = parse_repos(output).map do |repo|
         description = repo['Description'] == 'None' ? nil : repo['Description']
         distributors_config = repo['Distributors']['Config']
-        importers_config = repo['Importers']['Config']
+        importers = repo['Importers']
+        importers_config = importers['Config']
         feed = importers_config['Feed'] unless importers_config.nil?
         notes = repo['Notes'].nil? ? { } : repo['Notes']
 
         queries = importers_config && importers_config['Queries'] || ''
         queries = queries.split(/,/).map { |x| x.strip }
+
+        schedules = importers && importers['Scheduled Syncs'] || ''
+        schedules = schedules.split(/,/).map { |x| x.strip }
 
         serve_http = distributors_config['Serve Http'] unless distributors_config.nil?
         serve_http = serve_http.is_a?(String) ? serve_http == 'True' : true
@@ -68,6 +79,7 @@ module PuppetPulp
           :notes => notes,
           :feed => feed,
           :queries => queries,
+          :schedules => schedules,
           :serve_http => serve_http,
           :serve_https => serve_https
         }
@@ -97,6 +109,23 @@ module PuppetPulp
 
         singleton_class.send :define_method, :queries= do |arr|
           setter.call "--queries=\"#{arr.join ','}\""
+        end
+
+        # Easier to test
+        me = self
+        singleton_class.send :define_method, :schedules= do |arr|
+          repos = me.send :`, "pulp-admin puppet repo sync schedules list --repo-id=\"#{props[:id]}\""
+          repos.split(/\n/).each do |l|
+            if l =~ /^Id:\s*(.+)/
+              output = me.send :`, "pulp-admin puppet repo sync schedules delete --repo-id=\"#{props[:id]}\" --schedule-id=\"#{$1}\""
+              raise "Could not delete old schedule: #{output}" unless output =~ /Schedule successfully deleted/
+            end
+          end
+
+          arr.each do |s|
+            output = me.send :`, "pulp-admin puppet repo sync schedules create --repo-id=\"#{props[:id]}\" -s \"#{s}\""
+            raise "Could not create schedule: #{output}" unless output =~ /Schedule successfully created/
+          end
         end
 
         singleton_class.send :define_method, :notes= do |map|
@@ -140,12 +169,18 @@ module PuppetPulp
     def parse_lines(lines, indent = '')
       result = {}
       while lines && line = lines.shift
-        if line =~ /^#{indent}([^\s][^:]+):(.*)$/
-          value = $2.strip
+        if line =~ /^(#{indent}[^\s][^:]+):(\s*)(.*)$/
+          name = $1.strip
+          value = $3.strip
           if value.empty?
             value = parse_lines(lines, "#{indent}  ")
+          else
+            value_indent = ' ' * ($1.length + $2.length + 1)
+            while lines && lines[0] =~ /^#{value_indent}[^\s+]/
+              value += lines.shift.strip
+            end
           end
-          result[$1] = value
+          result[name] = value
         else
           lines.unshift line
           break

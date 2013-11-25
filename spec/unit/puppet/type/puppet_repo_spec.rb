@@ -112,6 +112,13 @@ describe type do
         expect { subject }.to_not raise_error
       end
     end
+
+    context 'given a valid schedule' do
+      let(:params) { { :schedules => ['2012-12-15T00:00Z/P1D'] } }
+      example do
+        expect { subject }.to_not raise_error
+      end
+    end
   end
 
   context 'with no login' do

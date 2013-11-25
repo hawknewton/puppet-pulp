@@ -8,6 +8,7 @@ Puppet::Type::type(:puppet_repo).provide(:pulp_admin) do
       :feed => @resource[:feed],
       :notes => @resource[:notes],
       :queries => @resource[:queries],
+      :schedules => @resource[:schedules],
       :serve_http => @resource[:serve_http],
       :serve_https => @resource[:serve_https]
     }
@@ -26,6 +27,7 @@ Puppet::Type::type(:puppet_repo).provide(:pulp_admin) do
     :feed,
     :notes,
     :queries,
+    :schedules,
     :serve_http,
     :serve_https ].each do |x|
     define_method(x) { pulp_admin.repos[@resource[:id]].send x }

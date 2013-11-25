@@ -27,6 +27,14 @@ Puppet::Type.newtype(:puppet_repo) do
     end
   end
 
+  newproperty(:schedules) do
+    schedules = []
+    munge do |v|
+      schedules << v
+    end
+  end
+
+
   newproperty(:serve_http) do
     munge do |v|
       v.to_s == 'true'

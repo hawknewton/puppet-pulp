@@ -50,17 +50,43 @@ describe PuppetPulp::PulpAdmin do
         end
       end
 
+      context 'when schedule creation fails' do
+        before do
+          allow(subject).to receive(:`).
+            with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\"").
+            and_return "Successfully created repository [#{repo_id}]"
+
+          expect(subject).to receive(:`).
+            with("pulp-admin puppet repo sync schedules create --repo-id=\"#{repo_id}\" -s \"2012-12-15T00:00Z/P1D\"").
+            and_return "Broken stuff is broken"
+        end
+
+        it 'should raise an exception' do
+          expect { subject.create(repo_id, { :schedules => ['2012-12-15T00:00Z/P1D'] }) }.
+            to raise_error /Broken stuff is broken/
+        end
+      end
+
       context 'with params' do
         let(:display_name) { 'new repo display name' }
         let(:description) { 'description' }
         let(:feed) { 'http://feed.com' }
         let(:queries) { ['query1', 'query2' ] }
         let(:notes) { { 'name1' => 'value1', 'name2' => 'value2' } }
+        let(:schedules) { ['2012-12-15T00:00Z/P1D', '2012-12-16T00:00Z/P1D' ] }
 
-        it 'should params to puppet-admin' do
+        it 'should create the repo and schedules' do
           expect(subject).to receive(:`).
             with("pulp-admin puppet repo create --repo-id=\"#{repo_id}\" --display-name=\"#{display_name}\" --description=\"#{description}\" --feed=\"#{feed}\" --serve-http=\"true\" --serve-https=\"false\" --queries=\"query1,query2\" --note \"name1=value1\" --note \"name2=value2\"").
             and_return "Successfully created repository [#{repo_id}]"
+
+          expect(subject).to receive(:`).
+            with("pulp-admin puppet repo sync schedules create --repo-id=\"#{repo_id}\" -s \"2012-12-15T00:00Z/P1D\"").
+            and_return "Schedule successfully created"
+
+          expect(subject).to receive(:`).
+            with("pulp-admin puppet repo sync schedules create --repo-id=\"#{repo_id}\" -s \"2012-12-16T00:00Z/P1D\"").
+            and_return "Schedule successfully created"
 
           subject.create repo_id, {
             :display_name => display_name,
@@ -69,6 +95,7 @@ describe PuppetPulp::PulpAdmin do
             :serve_http => 'true',
             :serve_https => 'false',
             :queries => queries,
+            :schedules => schedules,
             :notes => notes
           }
         end
@@ -198,6 +225,7 @@ describe PuppetPulp::PulpAdmin do
         expect(repo.notes['Name']).to eq 'value'
         expect(repo.feed).to eq "http://feed.com"
         expect(repo.queries).to eq ['query1', 'query2', 'query3']
+        expect(repo.schedules).to eq ['2012-12-16T00:00Z/P1D', '2012-12-17T00:00Z/P1D', '2012-12-18T00:00Z/P1D']
         expect(repo.serve_http).to be_true
         expect(repo.serve_https).to be_true
       end
@@ -297,7 +325,7 @@ describe PuppetPulp::PulpAdmin do
         end
       end
 
-      describe '#notes=' do
+      describe '#queries=' do
         it 'should call pulp-admin to set queries' do
           expect(subject).to receive(:`).
             with 'pulp-admin puppet repo update --repo-id=balls --queries="query5,query6,query7"'
@@ -310,6 +338,75 @@ describe PuppetPulp::PulpAdmin do
               with 'pulp-admin puppet repo update --repo-id=balls --queries=""'
             subject.repos['balls'].queries = []
           end
+        end
+      end
+
+      describe '#schedules=' do
+        it 'should call pulp-admin to set schedules' do
+          allow(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules list --repo-id="balls"').
+            and_return ''
+
+          expect(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules create --repo-id="balls" -s "2012-12-15T00:00Z/P1D"').
+            and_return "Schedule successfully created"
+
+          expect(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules create --repo-id="balls" -s "2012-12-16T00:00Z/P1D"').
+            and_return "Schedule successfully created"
+
+          subject.repos['balls'].schedules = ['2012-12-15T00:00Z/P1D', '2012-12-16T00:00Z/P1D']
+        end
+
+        it 'should delete old schedules' do
+          allow(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules create --repo-id="balls" -s "2012-12-15T00:00Z/P1D"').
+            and_return "Schedule successfully created"
+
+          expect(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules list --repo-id="balls"').
+            and_return File.read("#{fixture_path}/puppet_schedules.txt")
+
+          expect(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules delete --repo-id="balls" --schedule-id="5293a916e138231cf3a8c3cd"').
+            and_return "Schedule successfully deleted"
+
+
+          expect(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules delete --repo-id="balls" --schedule-id="5293a9cbe138231cf3a8c3dc"').
+            and_return "Schedule successfully deleted"
+
+          expect(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules delete --repo-id="balls" --schedule-id="5293a9cce138231cf3a8c3e8"').
+            and_return "Schedule successfully deleted"
+
+          subject.repos['balls'].schedules = ['2012-12-15T00:00Z/P1D']
+        end
+
+        it 'should raise an error if a schedule fails' do
+          allow(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules create --repo-id="balls" -s "2012-12-15T00:00Z/P1D"').
+            and_return "Broken stuff is broken"
+
+          expect(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules list --repo-id="balls"').
+            and_return ''
+
+          expect { subject.repos['balls'].schedules = ['2012-12-15T00:00Z/P1D'] }.
+            to raise_error /Broken stuff is broken/
+        end
+
+        it 'should raise an error if schedule deletion fails' do
+          expect(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules list --repo-id="balls"').
+            and_return File.read("#{fixture_path}/puppet_schedules.txt")
+
+          expect(subject).to receive(:`).
+            with('pulp-admin puppet repo sync schedules delete --repo-id="balls" --schedule-id="5293a916e138231cf3a8c3cd"').
+            and_return "Stuff broke"
+
+          expect { subject.repos['balls'].schedules = [] }.
+            to raise_error /Stuff broke/
         end
       end
     end

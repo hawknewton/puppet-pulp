@@ -1,0 +1,23 @@
++----------------------------------------------------------------------+
+                               Schedules
++----------------------------------------------------------------------+
+
+Schedule: 2012-12-16T00:00Z/P1D
+Id:       5293a916e138231cf3a8c3cd
+Enabled:  True
+Last Run: None
+Next Run: 2013-11-26T00:00:00Z
+
+Schedule: 2012-12-16T00:00Z/P1D
+Id:       5293a9cbe138231cf3a8c3dc
+Enabled:  True
+Last Run: None
+Next Run: 2013-11-26T00:00:00Z
+
+Schedule: 2012-12-16T00:00Z/P1D
+Id:       5293a9cce138231cf3a8c3e8
+Enabled:  True
+Last Run: None
+Next Run: 2013-11-26T00:00:00Z
+
+

@@ -16,7 +16,8 @@ Importers:
   Importer Type Id: puppet_importer
   Last Sync:        None
   Repo Id:          balls
-  Scheduled Syncs:
+  Scheduled Syncs:  2012-12-16T00:00Z/P1D, 2012-12-17T00:00Z/P1D,
+                    2012-12-18T00:00Z/P1D
 Distributors:
   Auto Publish:        True
   Config:
