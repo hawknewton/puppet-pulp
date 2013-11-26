@@ -1,4 +1,4 @@
-require 'puppet-pulp/pulp_admin'
+require "#{File.dirname(__FILE__)}/../../../puppet-pulp/pulp_admin"
 
 Puppet::Type::type(:puppet_repo).provide(:pulp_admin) do
   def create
