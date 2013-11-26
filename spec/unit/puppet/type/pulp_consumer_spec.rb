@@ -53,6 +53,14 @@ describe type do
       end
     end
 
+    context 'and a display name' do
+      let(:params) { { :display_name => 'test display name' } }
+
+      example do
+        expect { subject }.to_not raise_error
+      end
+    end
+
     context 'and a valid notes' do
       let(:params) { { :notes => { 'name1' => 'value1', 'name2' => 'value2' } } }
 

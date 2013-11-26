@@ -13,6 +13,7 @@ Puppet::Type.newtype(:pulp_consumer) do
   end
 
   newproperty(:description)
+  newproperty(:display_name)
 
   newparam(:login)
   newparam(:password)
