@@ -53,8 +53,7 @@ describe provider_class do
 
       it 'should pass consumer id' do
         expect_any_instance_of(PuppetPulp::PulpAdmin).
-          to receive(:unregister_consumer).
-          with consumer_id
+          to receive(:unregister_consumer)
 
         subject
       end
