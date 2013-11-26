@@ -411,4 +411,83 @@ describe PuppetPulp::PulpAdmin do
       end
     end
   end
+
+  describe '#register_consumer' do
+    context 'given a valid consumer id' do
+      let(:consumer_id) { 'test_consumer_id' }
+
+      it 'should register a new consumer' do
+        expect(subject).
+          to receive(:`).
+          with("pulp-consumer -u \"#{login}\" -p \"#{password}\" register --consumer-id=\"#{consumer_id}\"").
+          and_return "Consumer [#{consumer_id}] successfully registered"
+
+        subject.register_consumer consumer_id
+      end
+
+      it 'should raise an error if registration fails' do
+        allow(subject).
+          to receive(:`).
+          with("pulp-consumer -u \"#{login}\" -p \"#{password}\" register --consumer-id=\"#{consumer_id}\"").
+          and_return 'Stuff broke'
+
+        expect { subject.register_consumer consumer_id }.to raise_error /Could not register consumer/
+      end
+    end
+  end
+
+  describe '#unregister_consumer' do
+    it 'should unregister a consumer' do
+      expect(subject).
+        to receive(:`).
+        with('pulp-consumer unregister').
+        and_return "Consumer [abc123] successfully unregistered"
+
+      subject.unregister_consumer
+    end
+
+    it 'should raise an error if unregistration fails' do
+      allow(subject).
+        to receive(:`).
+        with('pulp-consumer unregister').
+        and_return 'stuff broke'
+
+      expect { subject.unregister_consumer }.
+        to raise_error /Could not unregister consumer/
+    end
+  end
+
+  describe '#consumer' do
+    context 'with a valid consumer id' do
+      let(:consumer_id) { "test_consumer_id" }
+
+      it 'should return current consumer when currently registered' do
+        expect(subject).
+          to receive(:`).
+          with('pulp-consumer status').
+          and_return "This consumer is registered to the server [blablabla.com] with the ID\n[#{consumer_id}]"
+
+        expect(subject.consumer.consumer_id).to eq consumer_id
+      end
+
+      it 'should return nil when not registered' do
+        expect(subject).
+          to receive(:`).
+          with('pulp-consumer status').
+          and_return "This consumer is not currently registered."
+
+        expect(subject.consumer).to be_nil
+      end
+
+      it 'should raise an error when bad shit happens' do
+        expect(subject).
+          to receive(:`).
+          with('pulp-consumer status').
+          and_return 'Bad shit happened'
+
+        expect { subject.consumer }.
+          to raise_error /Could not determine registration status/
+      end
+    end
+  end
 end

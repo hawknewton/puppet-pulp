@@ -10,6 +10,7 @@ describe 'integrated tests' do
 
   # In case this isn't our first rodeo
   before(:all) { shell 'pulp-consumer -u admin -p admin unregister' }
+  after(:all) { shell 'pulp-consumer -u admin -p admin unregister' }
 
   before { puppet_apply pp }
 

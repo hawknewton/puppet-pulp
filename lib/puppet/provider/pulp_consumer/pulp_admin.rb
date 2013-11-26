@@ -6,12 +6,12 @@ Puppet::Type::type(:pulp_consumer).provide(:pulp_admin) do
   end
 
   def destroy
-    pulp_admin.unregister_consumer @resource[:id]
+    pulp_admin.unregister_consumer
   end
 
   def exists?
     consumer = pulp_admin.consumer
-    !consumer.nil? && consumer.id == @resource[:id]
+    !consumer.nil? && consumer.consumer_id == @resource[:id]
   end
 
   private

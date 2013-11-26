@@ -152,6 +152,27 @@ module PuppetPulp
       @logged_in = true
     end
 
+    def register_consumer(consumer_id)
+      output = `pulp-consumer -u "#{@username}" -p "#{@password}" register --consumer-id="#{consumer_id}"`
+      raise "Could not register consumer: #{output}" unless output =~ /Consumer \[#{consumer_id}\] successfully registered/
+    end
+
+    def unregister_consumer
+      output = `pulp-consumer unregister`
+      raise "Could not unregister consumer: #{output}" unless output =~ /Consumer \[.+\] successfully unregistered/
+    end
+
+    def consumer
+      output = `pulp-consumer status`
+      if output.gsub("\n", ' ') =~ /This consumer is registered to the server \[.+\] with the ID \[(.+)\]/
+        OpenStruct.new :consumer_id => $1
+      elsif output =~ /This consumer is not currently registered/
+        nil
+      else
+        raise "Could not determine registration status: #{output}"
+      end
+    end
+
     private
 
     def parse_repos(str)

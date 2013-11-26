@@ -80,7 +80,7 @@ describe provider_class do
           expect_any_instance_of(PuppetPulp::PulpAdmin).
             to receive(:consumer).
             and_return(OpenStruct.new({
-              :id => consumer_id
+              :consumer_id => consumer_id
             }))
 
             should be_true
