@@ -44,37 +44,5 @@ describe type do
     example do
       expect { subject }.to_not raise_error
     end
-
-    context 'and a description' do
-      let(:params) { { :description => 'test description' } }
-
-      example do
-        expect { subject }.to_not raise_error
-      end
-    end
-
-    context 'and a display name' do
-      let(:params) { { :display_name => 'test display name' } }
-
-      example do
-        expect { subject }.to_not raise_error
-      end
-    end
-
-    context 'and a valid notes' do
-      let(:params) { { :notes => { 'name1' => 'value1', 'name2' => 'value2' } } }
-
-      example do
-        expect { subject }.to_not raise_error
-      end
-    end
-
-    context 'and invalid notes' do
-      let(:params) { { :notes => 'invalid crap' } }
-
-      example do
-        expect { subject }.to raise_error Puppet::Error, /notes must be a map/
-      end
-    end
   end
 end

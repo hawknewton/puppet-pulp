@@ -12,17 +12,8 @@ Puppet::Type.newtype(:pulp_consumer) do
     end
   end
 
-  newproperty(:description)
-  newproperty(:display_name)
-
   newparam(:login)
   newparam(:password)
-
-  newproperty(:notes) do
-    validate do |v|
-      raise 'notes must be a map' unless v.is_a? Hash
-    end
-  end
 
   validate do
     fail 'must specify login' if self[:login].to_s.empty?
