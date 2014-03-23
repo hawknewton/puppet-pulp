@@ -1,4 +1,5 @@
-class pulp($ensure = 'enabled') { 
+# main pulp class
+class pulp($ensure = 'enabled') {
   if $ensure == 'enabled' {
     $enabled = 1
   } elsif $ensure == 'disabled' {

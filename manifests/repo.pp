@@ -1,4 +1,9 @@
-class pulp::repo($ensure) {
+# installs the pulp repo
+class pulp::repo(
+  $ensure = 'present',
+  $site = 'http://repos.fedorapeople.org'
+  $url = 'repos/pulp/pulp/stable/2/$releasever/$basearch/') {
+
   if $ensure == 'absent' {
     yumrepo { 'pulp-v2-stable':
       enabled => 'absent'
@@ -11,7 +16,7 @@ class pulp::repo($ensure) {
     }
     yumrepo { 'pulp-v2-stable':
       enabled  => $enabled,
-      baseurl  => 'http://repos.fedorapeople.org/repos/pulp/pulp/stable/2/$releasever/$basearch/',
+      baseurl  => "${site}/${url}",
       descr    => 'Pulp v2 Production Releases',
       gpgcheck => 0
     }

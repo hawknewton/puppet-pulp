@@ -1,4 +1,9 @@
-class pulp::admin_client($ensure = 'present', $server = $::fqdn, $conf_template = '') {
+# Installs the admin client
+class pulp::admin_client(
+  $ensure = 'present',
+  $server = $::fqdn,
+  $conf_template = '') {
+
   package { [ 'pulp-admin-client',
               'pulp-puppet-admin-extensions',
               'pulp-rpm-admin-extensions']:

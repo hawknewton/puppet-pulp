@@ -1,4 +1,9 @@
-class pulp::consumer($ensure = 'present', $server = $::fqdn, $conf_template = 'pulp/consumer.conf.erb') {
+# installs the pulp::consumer client
+class pulp::consumer(
+  $ensure = 'present',
+  $server = $::fqdn,
+  $conf_template = 'pulp/consumer.conf.erb') {
+
   package { [ 'pulp-agent',
               'pulp-consumer-client',
               'pulp-puppet-consumer-extensions',
@@ -26,7 +31,7 @@ class pulp::consumer($ensure = 'present', $server = $::fqdn, $conf_template = 'p
       ensure  => 'present',
       owner   => 'root',
       group   => 'root',
-      mode    => '644',
+      mode    => '0644',
       content => template($conf_template),
       require => Package['pulp-consumer-client']
     }
