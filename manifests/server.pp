@@ -1,4 +1,7 @@
-class pulp::server($ensure = 'present', $conf_template = '') {
+# installs the pulp server
+class pulp::server(
+  $ensure = 'present',
+  $conf_template = '') {
 
   if $ensure == 'absent' {
     package { [ 'pulp-server',
@@ -34,10 +37,10 @@ class pulp::server($ensure = 'present', $conf_template = '') {
     }
 
     file { '/etc/pulp/server.conf':
+      ensure  => 'present',
       owner   => 'root',
       group   => 'root',
-      ensure  => 'present',
-      mode    => 644,
+      mode    => '0644',
       content => template($template),
       require => Package['pulp-server']
     }

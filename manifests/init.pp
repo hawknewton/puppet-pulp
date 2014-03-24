@@ -1,4 +1,5 @@
-class pulp($ensure = 'enabled') { 
+# main pulp class
+class pulp($ensure = 'enabled') {
   if $ensure == 'enabled' {
     $enabled = 1
   } elsif $ensure == 'disabled' {
@@ -13,6 +14,6 @@ class pulp($ensure = 'enabled') {
 
   class { 'pulp::repo':
     ensure => $ensure,
-    stage  => pulp_repo_setup
+    stage  => pulp_repo_setup,
   }
 }

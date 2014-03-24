@@ -6,7 +6,7 @@ shared_context :server_conf_present do
       :ensure  => 'present',
       :owner   => 'root',
       :group   => 'root',
-      :mode    => '644',
+      :mode    => '0644',
       :require => 'Package[pulp-server]'
     })
   end
