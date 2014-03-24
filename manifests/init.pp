@@ -14,6 +14,6 @@ class pulp($ensure = 'enabled') {
 
   class { 'pulp::repo':
     ensure => $ensure,
-    stage  => pulp_repo_setup
+    stage  => pulp_repo_setup,
   }
 }

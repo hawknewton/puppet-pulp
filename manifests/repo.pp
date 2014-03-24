@@ -1,7 +1,7 @@
 # installs the pulp repo
 class pulp::repo(
   $ensure = 'present',
-  $site = 'http://repos.fedorapeople.org'
+  $site = 'http://repos.fedorapeople.org',
   $url = 'repos/pulp/pulp/stable/2/$releasever/$basearch/') {
 
   if $ensure == 'absent' {
