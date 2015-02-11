@@ -7,8 +7,8 @@ brings to the table (among other things) the ability to host an internal puppet
 repository (like puppetforge but without the pretty web interface).
 
 ## Quickstart
-* Install an [epel repo](http://puppetforge.com/stahnma/epel)
-* Disable [selinux](http://puppetforge.com/spiette/selinux)
+* Install an [epel repo](https://forge.puppetlabs.com/stahnma/epel)
+* Disable [selinux](https://forge.puppetlabs.com/spiette/selinux)
 
 Install the server, admin client, and consumer on the same box:
 
