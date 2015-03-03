@@ -2,7 +2,8 @@
 class pulp::repo(
   $ensure = 'present',
   $site = 'http://repos.fedorapeople.org',
-  $url = 'repos/pulp/pulp/stable/2/$releasever/$basearch/') {
+  $url = 'repos/pulp/pulp/stable/2/$releasever/$basearch/',
+  $proxy = undef) {
 
   if $ensure == 'absent' {
     yumrepo { 'pulp-v2-stable':
@@ -19,6 +20,11 @@ class pulp::repo(
       baseurl  => "${site}/${url}",
       descr    => 'Pulp v2 Production Releases',
       gpgcheck => 0
+    }
+    if ($proxy) {
+      Yumrepo['pulp-v2-stable'] {
+        proxy => $proxy
+      }
     }
   }
 }
