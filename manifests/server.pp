@@ -6,6 +6,7 @@ class pulp::server(
   $packages = [ 'mongodb-server',
                 'qpid-cpp-server',
                 'qpid-cpp-server-store',
+                'python-qpid-qmf',
                 'pulp-server',
                 'pulp-puppet-plugins',
                 'pulp-rpm-plugins',
@@ -56,6 +57,7 @@ class pulp::server(
     # this for up to two minutes
     exec { 'setup-pulp-db':
       command     => '/usr/bin/pulp-manage-db',
+      user        => 'apache',
       refreshonly => true,
       tries       => 12,
       try_sleep   => 10,
