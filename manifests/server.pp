@@ -3,11 +3,16 @@ class pulp::server(
   $ensure = 'present',
   $conf_template = '') {
 
-  if $ensure == 'absent' {
-    package { [ 'pulp-server',
+  $packages = [ 'mongodb-server',
+                'qpid-cpp-server',
+                'qpid-cpp-server-store',
+                'pulp-server',
                 'pulp-puppet-plugins',
                 'pulp-rpm-plugins',
-                'pulp-selinux']:
+                'pulp-selinux']
+
+  if $ensure == 'absent' {
+    package { $packages:
       ensure => 'absent'
     }
 
@@ -19,10 +24,7 @@ class pulp::server(
       ensure => 'stopped'
     }
   } else {
-    package { [ 'pulp-server',
-                'pulp-puppet-plugins',
-                'pulp-rpm-plugins',
-                'pulp-selinux']:
+    package { $packages:
       ensure => $ensure,
       notify => Exec['setup-pulp-db'],
       before => [Service['mongod'], Service['qpidd']];
