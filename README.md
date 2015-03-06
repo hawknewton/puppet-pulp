@@ -81,7 +81,7 @@ class { 'pulp':
 ##### Parameters
 **ensure**
 * `enabled`: Install the pulp yumrepo and enable it
-* `diabled`: Install and pulp yumrepo and leave it disabled
+* `disabled`: Install and pulp yumrepo and leave it disabled
 * `absent`: Remove any yumrepo called `pulp-v2-stable`
 
 If you want to manage the pulp repo yourself, don't include the pulp class.
