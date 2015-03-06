@@ -84,6 +84,9 @@ class { 'pulp':
 * `disabled`: Install and pulp yumrepo and leave it disabled
 * `absent`: Remove any yumrepo called `pulp-v2-stable`
 
+**proxy**
+* allows specification of an HTTP proxy in the form `http://<proxy_host>:<proxy_port>/`
+
 If you want to manage the pulp repo yourself, don't include the pulp class.
 
 #### Class pulp::server
