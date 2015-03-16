@@ -6,6 +6,10 @@ shared_context :server_packages_base do
       :notify => 'Exec[setup-pulp-db]',
       :before => ['Service[mongod]', 'Service[qpidd]'] }
   end
+  it { should contain_package('mongodb-server').with(package_params) }
+  it { should contain_package('qpid-cpp-server').with(package_params) }
+  it { should contain_package('qpid-cpp-server-store').with(package_params) }
+  it { should contain_package('python-qpid-qmf').with(package_params) }
   it { should contain_package('pulp-server').with(package_params) }
   it { should contain_package('pulp-puppet-plugins').with(package_params) }
   it { should contain_package('pulp-rpm-plugins').with(package_params) }
@@ -24,6 +28,10 @@ shared_context :server_packages_pinned do
 end
 
 shared_context :server_packages_absent do
+  it { should contain_package('mongodb-server').with(:ensure => 'absent') }
+  it { should contain_package('qpid-cpp-server').with(:ensure => 'absent') }
+  it { should contain_package('qpid-cpp-server-store').with(:ensure => 'absent') }
+  it { should contain_package('python-qpid-qmf').with(:ensure => 'absent') }
   it { should contain_package('pulp-server').with(:ensure => 'absent') }
   it { should contain_package('pulp-puppet-plugins').with(:ensure => 'absent') }
   it { should contain_package('pulp-puppet-plugins').with(:ensure => 'absent') }
