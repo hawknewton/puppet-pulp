@@ -14,7 +14,7 @@ Install the server, admin client, and consumer on the same box:
 
 ```
 class { 'pulp': }               # Install pulp v2 yum repo
-clsss { 'pulp::server': }       # Install pulp server
+class { 'pulp::server': }       # Install pulp server
 class { 'pulp::admin_client': } # Install admin client
 class { 'pulp::consumer': }     # Install pulp agent and client
 
